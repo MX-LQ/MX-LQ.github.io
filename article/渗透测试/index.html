@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <link rel="icon" href="/favicon.png">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          渗透测试总结 - 明心 | Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://www.mingxin.live/article/渗透测试/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/1.jpg')
+            /*post*/
+        
+    }
+    
+    #signature{
+        background-image: url('//img/signature/明心.gif');
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#渗透" title="渗透">渗透</a>
+                            
+                        </div>
+                        <h1>渗透测试总结</h1>
+                        <h2 class="subheading">渗透测试思路总结</h2>
+                        <span class="meta">
+                            Posted by 明心 on
+                            2019-04-21
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ming Xin</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="渗透测试总结">渗透测试总结</h1>
+<h2 id="一pte渗透测试执行流程">一：PTE渗透测试执行流程</h2>
+<p>前期交互阶段——》情报搜集——》威胁建模——》漏洞分析——》渗透攻击——》后渗透攻击——》报告</p>
+<h2 id="二实际渗透过程">二：实际渗透过程</h2>
+<h3 id="1前期交互阶段">1：前期交互阶段</h3>
+<ul>
+<li>明确测试范围</li>
+<li>目标规划</li>
+</ul>
+<h3 id="2情报搜集">2：情报搜集</h3>
+<p>2.1：域名信息</p>
+<ul>
+<li>子域名收集：Layer子域名爆破，subDomainBrute，搜索引擎</li>
+<li>Whois查询：网站注册人的姓名和邮箱信息以及备案查询</li>
+<li>旁站查询</li>
+<li>真实IP：内部邮箱源、ping分站域名——》扫描同一网段、国外访问、绕过Cloudflare （http:www.crimeflare.us/cfs.html#box）</li>
+</ul>
+<p>2.2：敏感文件</p>
+<ul>
+<li>御剑目录扫描</li>
+<li>DirBuster</li>
+<li>BBScan</li>
+<li>wwwscan</li>
+</ul>
+<p>2.3：端口开放情况——nmap</p>
+<ul>
+<li>-T4(0~5)、-PS/-PA/-Pn、-sS/-sA/-sT/-sU/-sF、-p/-sV/-O/-vv/–top-ports/-F/–traceroute</li>
+<li>TCP空闲扫描  msf——》use auxiliary/scanner/ip/ipidseq——》-sl 空闲主机ip     目标主机ip</li>
+</ul>
+<p>2.4：指纹信息收集</p>
+<ul>
+<li>常见的CMS：Dedecms（织梦）、WordPress、PHPCMS、drupal</li>
+<li>指纹识别：工具和在线网站（云悉、BugScaner、Whatweb、Wappalyzer插件）</li>
+</ul>
+<h3 id="3根据收集的信息寻找漏洞进行利用">3：根据收集的信息寻找漏洞进行利用</h3>
+<h4 id="31扫描中间件-服务器管理台-常用服务弱口令">3.1：扫描中间件、服务器管理台、常用服务弱口令</h4>
+<h4 id="32sql注入">3.2：SQL注入</h4>
+<p>3.2.1：原理</p>
+<p>Web应用程序对用户输入非法的SQL语句没有进行判断和过滤或者判断和过滤被绕过。从而参数带入用户输入的非法SQL语句进行查询，实现对数据库的操作。</p>
+<p>3.2.2：SQL注入方式</p>
+<ul>
+<li>
+<p>Union注入</p>
+</li>
+<li>
+<p>布尔注入</p>
+</li>
+<li>
+<p>报错注入（updatexml）</p>
+</li>
+<li>
+<p>时间注入</p>
+</li>
+<li>
+<p>宽字节注入（\转义，通过%df’再加其他注入语句，如union …）</p>
+</li>
+<li>
+<p>cookie注入 （抓包，cookie中存在查询参数可控）</p>
+</li>
+<li>
+<p>XFF注入</p>
+</li>
+<li>
+<p>Union注入、布尔注入、</p>
+</li>
+</ul>
+<p>3.2.3：修复方式</p>
+<ul>
+<li>过滤危险字符</li>
+<li>使用PDO预编译语句，不要讲变量直接拼接到PDO语句中，使用占位符进行数据库的增删改查</li>
+</ul>
+<h4 id="33xss">3.3：XSS</h4>
+<p>3.3.1：反射型XSS:</p>
+<p><strong>原理：</strong></p>
+<p>攻击者将含有XSS代码的恶意链接发送给目标用户，当目标用户访问该链接时，服务器接收该目标用户的请求并进行处理，然后服务器把带有XSS代码的数据发送给目标用户的浏览器，浏览器解析这段带有XSS代码的恶意脚本后，就会触发XSS漏洞</p>
+<p>3.3.2：存储型XSS</p>
+<p><strong>原理：</strong></p>
+<p>当恶意用户输入的XSS代码被存储到目标服务器的数据库中而不仅仅是只在浏览器中解析，此时便造成了存储型XSS，当其他用户客户端只要请求到被插入到数据库中的XSS代码时，XSS代码就会被执行</p>
+<p>3.3.3：DOM型XSS</p>
+<p><strong>原理：</strong></p>
+<p>DOM的结构：节点树     客户端的JS脚本可以通过DOM动态修改页面内容，从客户端获取DOM数据并在本地执行，故而DOM型的XSS不需要与服务器交互。当用户请求一个进过设计包含有XSS代码的url时，DOM对象处理XSS代码，导致存在XSS漏洞。</p>
+<h4 id="34csrf">3.4：CSRF</h4>
+<p>3.4.1：原理</p>
+<p>攻击者利用目标用户的身份，以目标用户的名义执行攻击者构造的URL指向页面中的恶意功能。</p>
+<p>该漏洞的利用条件是：</p>
+<p>①：目标用户已经登陆期望的网站，能够执行网站的功能</p>
+<p>②：目标用户访问了攻击者构造的URL或页面</p>
+<p>3.4.2：修复</p>
+<ul>
+<li>验证请求的Referer值</li>
+<li>在HTTP请求中加入一个随机产生的token，并在服务端验证token</li>
+</ul>
+<h4 id="35ssrf漏洞">3.5：SSRF漏洞:</h4>
+<p>3.5.1：原理</p>
+<p>服务端提供了从其他服务器应用获取数据的功能且没有对目标地址进行过滤和限制。SSRF（服务端的请求伪造）利用存在漏洞的Web应用或服务器作为代理或跳板攻击远程和本地的服务器。</p>
+<p>3.5.2：修复</p>
+<ul>
+<li>限制请求的端口只能为Web端口，只允许访问HTTP和HTTPS的请求</li>
+<li>限制不能访问内网的IP</li>
+<li>屏蔽返回的详细信息</li>
+</ul>
+<p>3.5.3：CSRF漏洞和SSRF漏洞的区别</p>
+<p>CSRF漏洞是由客户端发起的请求伪造攻击，而SSRF漏洞是由服务端发起的请求伪造攻击</p>
+<h4 id="36文件上传">3.6：文件上传</h4>
+<ul>
+<li>本地JS检测绕过</li>
+<li>后缀名检测绕过（asa、cer、大小写）</li>
+<li>检测文件头绕过</li>
+<li>HTTP头检测绕过</li>
+<li>文件截断绕过（PHP%00截断，Asp组件NULL字节截断）</li>
+<li>条件竞争攻击</li>
+<li>Nginx解析漏洞（Nginx服务器配置不当，将任何文件以PHP方式解析，可上传图片马，用/.php测试）</li>
+<li>Apache mime解析漏洞（低版本从右往左解析.php.rar）</li>
+<li>IIS6.0解析漏洞（1：<em>.asp;.jpg   2：</em>.asp文件夹 ）</li>
+<li>编辑器漏洞</li>
+</ul>
+<h4 id="37命令执行漏洞代码执行漏洞">3.7：命令执行漏洞/代码执行漏洞</h4>
+<p>PHP中能够执行系统命令的函数有system、exec、passthru、shell_exec、popen、proc_poen、pcntl_exec</p>
+<p>PHP中常见的代码执行函数有  eval、preg_replace+/e、assert、call_user_func、call_user_func_array、create_function等函数</p>
+<p>通过利用<code>|</code> <code>||</code>  <code>&amp;</code> <code>&amp;&amp;</code>  等管道符。执行管道符后面的命令</p>
+<h4 id="38文件包含漏洞">3.8：文件包含漏洞</h4>
+<p>常见的文件包含函数：require()、require_once()、 include()、include_once()</p>
+<p>文件包含函数加载的参数没有经过过滤或者严格的定义，可以被用户控制，包含其他恶意文件，导致了执行了非预期的代码。</p>
+<h4 id="39逻辑漏洞">3.9：逻辑漏洞</h4>
+<ul>
+<li>越权</li>
+<li>验证码突破</li>
+<li>身份认证安全</li>
+<li>数据篡改</li>
+</ul>
+<h4 id="310xxe漏洞">3.10：XXE漏洞</h4>
+<p>3.10.1：原理</p>
+<p>XXE漏洞为XML外部实体注入，XML可扩展标记语言，用来方便传输数据。当允许引用外部实体时，通过构造恶意内容，可导致读取任意文件、执行系统命令、探测内网端口、攻击内网网站等危害</p>
+<p>3.10.2：修复</p>
+<ul>
+<li>禁止使用外部实体</li>
+<li>过滤用户提交的XML数据</li>
+</ul>
+<h4 id="311中间件漏洞">3.11：中间件漏洞</h4>
+<h4 id="312fuzz模糊测试">3.12：fuzz模糊测试</h4>
+<p>##：jsonp**********************************************************************</p>
+<p>Cmd命令行查看系统是否有隐藏用户的命令是：</p>
+<p>reg query HKEY_LOCAL_MACHINE\SAM\SAM\Domains\Account\Users /s</p>
+<p>PHP远程包含需要开启<code>allow_url_include</code>选项</p>
+<h3 id="4waf">4：WAF</h3>
+<h4 id="41waf的判断">4.1：waf的判断</h4>
+<p>sqlmap -u url --identify-waf --bath</p>
+<h4 id="42waf的绕过">4.2：waf的绕过</h4>
+<h3 id="5后渗透攻击">5：后渗透攻击</h3>
+<p>5.1：msf的使用</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    <style>
+      span.toc-nav-number{
+        display: none
+      }
+    </style>
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#渗透测试总结"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">&#x6E17;&#x900F;&#x6D4B;&#x8BD5;&#x603B;&#x7ED3;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#一pte渗透测试执行流程"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">&#x4E00;&#xFF1A;PTE&#x6E17;&#x900F;&#x6D4B;&#x8BD5;&#x6267;&#x884C;&#x6D41;&#x7A0B;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#二实际渗透过程"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">&#x4E8C;&#xFF1A;&#x5B9E;&#x9645;&#x6E17;&#x900F;&#x8FC7;&#x7A0B;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1前期交互阶段"><span class="toc-nav-number">1.2.1.</span> <span class="toc-nav-text">1&#xFF1A;&#x524D;&#x671F;&#x4EA4;&#x4E92;&#x9636;&#x6BB5;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2情报搜集"><span class="toc-nav-number">1.2.2.</span> <span class="toc-nav-text">2&#xFF1A;&#x60C5;&#x62A5;&#x641C;&#x96C6;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#3根据收集的信息寻找漏洞进行利用"><span class="toc-nav-number">1.2.3.</span> <span class="toc-nav-text">3&#xFF1A;&#x6839;&#x636E;&#x6536;&#x96C6;&#x7684;&#x4FE1;&#x606F;&#x5BFB;&#x627E;&#x6F0F;&#x6D1E;&#x8FDB;&#x884C;&#x5229;&#x7528;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#31扫描中间件-服务器管理台-常用服务弱口令"><span class="toc-nav-number">1.2.3.1.</span> <span class="toc-nav-text">3.1&#xFF1A;&#x626B;&#x63CF;&#x4E2D;&#x95F4;&#x4EF6;&#x3001;&#x670D;&#x52A1;&#x5668;&#x7BA1;&#x7406;&#x53F0;&#x3001;&#x5E38;&#x7528;&#x670D;&#x52A1;&#x5F31;&#x53E3;&#x4EE4;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#32sql注入"><span class="toc-nav-number">1.2.3.2.</span> <span class="toc-nav-text">3.2&#xFF1A;SQL&#x6CE8;&#x5165;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#33xss"><span class="toc-nav-number">1.2.3.3.</span> <span class="toc-nav-text">3.3&#xFF1A;XSS</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#34csrf"><span class="toc-nav-number">1.2.3.4.</span> <span class="toc-nav-text">3.4&#xFF1A;CSRF</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#35ssrf漏洞"><span class="toc-nav-number">1.2.3.5.</span> <span class="toc-nav-text">3.5&#xFF1A;SSRF&#x6F0F;&#x6D1E;:</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#36文件上传"><span class="toc-nav-number">1.2.3.6.</span> <span class="toc-nav-text">3.6&#xFF1A;&#x6587;&#x4EF6;&#x4E0A;&#x4F20;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#37命令执行漏洞代码执行漏洞"><span class="toc-nav-number">1.2.3.7.</span> <span class="toc-nav-text">3.7&#xFF1A;&#x547D;&#x4EE4;&#x6267;&#x884C;&#x6F0F;&#x6D1E;/&#x4EE3;&#x7801;&#x6267;&#x884C;&#x6F0F;&#x6D1E;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#38文件包含漏洞"><span class="toc-nav-number">1.2.3.8.</span> <span class="toc-nav-text">3.8&#xFF1A;&#x6587;&#x4EF6;&#x5305;&#x542B;&#x6F0F;&#x6D1E;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#39逻辑漏洞"><span class="toc-nav-number">1.2.3.9.</span> <span class="toc-nav-text">3.9&#xFF1A;&#x903B;&#x8F91;&#x6F0F;&#x6D1E;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#310xxe漏洞"><span class="toc-nav-number">1.2.3.10.</span> <span class="toc-nav-text">3.10&#xFF1A;XXE&#x6F0F;&#x6D1E;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#311中间件漏洞"><span class="toc-nav-number">1.2.3.11.</span> <span class="toc-nav-text">3.11&#xFF1A;&#x4E2D;&#x95F4;&#x4EF6;&#x6F0F;&#x6D1E;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#312fuzz模糊测试"><span class="toc-nav-number">1.2.3.12.</span> <span class="toc-nav-text">3.12&#xFF1A;fuzz&#x6A21;&#x7CCA;&#x6D4B;&#x8BD5;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#4waf"><span class="toc-nav-number">1.2.4.</span> <span class="toc-nav-text">4&#xFF1A;WAF</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#41waf的判断"><span class="toc-nav-number">1.2.4.1.</span> <span class="toc-nav-text">4.1&#xFF1A;waf&#x7684;&#x5224;&#x65AD;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#42waf的绕过"><span class="toc-nav-number">1.2.4.2.</span> <span class="toc-nav-text">4.2&#xFF1A;waf&#x7684;&#x7ED5;&#x8FC7;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#5后渗透攻击"><span class="toc-nav-number">1.2.5.</span> <span class="toc-nav-text">5&#xFF1A;&#x540E;&#x6E17;&#x900F;&#x653B;&#x51FB;</span></a></li></ol></li></ol></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#渗透" title="渗透">渗透</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://blog.csdn.net/qq_41880069" target="_blank">CSDN Blog MX-LQ</a></li>
+                    
+                        <li><a href="https://www.secquan.org/users/明心" target="_blank">圈子社区 ID 明心</a></li>
+                    
+                        <li><a href="https://github.com/MX-LQ" target="_blank">GitHub ID MX-LQ </a></li>
+                    
+                        <li><a href="mignxin.top" target="_blank">明心 |Blog2 </a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/MX-LQ">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 明心 2019 
+                    <br>
+                      Welcome you<a href="http://www.mingxin.live">made by 明心</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                     About <a href="http://www.mingxin.live">明心</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=MX-LQ&repo=MX-LQ.github.io&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://www.mingxin.live/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://www.mingxin.live/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
