@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <link rel="icon" href="/favicon.ico">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          php代码审计常见漏洞函数介绍 - 明心 | Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://www.mingxin.live/article/php代码审计常见漏洞函数介绍/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/5.jpg')
+            /*post*/
+        
+    }
+    
+    #signature{
+        background-image: url('//img/signature/明心.gif');
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#PHP代码审计" title="PHP代码审计">PHP代码审计</a>
+                            
+                        </div>
+                        <h1>php代码审计常见漏洞函数介绍</h1>
+                        <h2 class="subheading">举例介绍php代码审计中常见漏洞函数，有很多CTF中的点</h2>
+                        <span class="meta">
+                            Posted by 明心 on
+                            2019-04-29
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ming Xin</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="php代码审计常见漏洞函数介绍">php代码审计常见漏洞函数介绍</h1>
+<h2 id="一常见的容易出现漏洞的函数介绍">一：常见的容易出现漏洞的函数介绍</h2>
+<h3 id="1intval使用不当导致安全漏洞的分析">1：intval()使用不当导致安全漏洞的分析</h3>
+<p><strong>1.1：函数介绍</strong></p>
+<p>intval() 函数用于获取变量的整数值。intval函数有个特性:“直到遇上数字或正负符号才开始做转换，在遇到非数字或字符串结束时(\0)结束转换”,在某些应用程序里由于对intval函数这个特性认识不够,错误的使用导致绕过一些安全判断导致安全漏洞.此外有些题目还利用intval函数四舍五入的特性来绕过判断。</p>
+<p><strong>1.2：代码分析</strong></p>
+<p>●漏洞代码分析</p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/1.jpg" alt=""></p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/2.jpg" alt=""></p>
+<p>当intval函数接受到字符串型参数是调用convert_to_long_base()处理，接下来调用Z_LVAL_P(op) = strtol(strval, NULL, base);通过strtol函数来处理参数。</p>
+<p><strong>函数原型如下：</strong></p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/3.jpg" alt=""></p>
+<p>这个函数会将参数nptr字符串根据参数base来转换成长整型数,参数base范围从2至36,或0.参数base代表采用的进制方式,如base值为10则采用10进制,若base值为16则采用16进制等。</p>
+<p><strong>流程为：</strong></p>
+<p>strtol()会扫描参数nptr字符串，跳过前面的空格字符，直到遇上数字或正负符号才开始做转换，再遇到非数字或字符串结束时(\0)结束转换，并将结果返回。</p>
+<p>那么当intval用在if等的判断里面,将会导致这个判断实去意义,从而导致安全漏洞。</p>
+<p>●代码测试（附代码运行结果）</p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/4.jpg" alt=""></p>
+<p>通过代码实际测试，说明intval()转换的时候，会将从字符串的开始进行转换直到遇到一个非数字的字符。即使出现无法转换的字符串，intval()不会报错而是返回0，而且intval可以被%00截断</p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/5.jpg" alt=""></p>
+<p>如果当$req[‘number’]=0%00即可绕过</p>
+<p><strong>实例：</strong></p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/6.jpg" alt=""></p>
+<p>注意：这里042结果是34，因为按照之前说的，intval函数会按照参数的进制返回数值。</p>
+<h3 id="2switch">2：switch()</h3>
+<p><strong>2.1：函数介绍</strong></p>
+<p>如果switch是数字类型的case的判断时，switch会将其中的参数转换为int类型，效果相当于intval函数。</p>
+<p><strong>2.2：代码分析</strong></p>
+<p>测试代码及输出结果如下：</p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/7.jpg" alt=""></p>
+<p>这个时候程序输出的是i is less than 3 but not negative，是由于switch()函数将$i进行了类型转换，转换结果为2</p>
+<p>●PHP中非数字开头字符串和数字 0比较==都返回True</p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/8.jpg" alt=""></p>
+<p>因为通过逻辑运算符让字符串和数字比较时，会自动将字符串转换为数字.而当字符串无法转换为数字时，其结果就为0了，然后再和另一个0比大小，结果自然为ture。注意：如果那个字符串是以数字开头的，如6ldb，它还是可以转为数字6的，然后和0比较就不等了（但是和6比较就相等）</p>
+<p>●要字符串与数字判断不转类型方法有：</p>
+<p>●方法一：$str=“字符串”;if($str===0){ echo “返回了true.”;}</p>
+<p>●方法二：$str=“字符串”;if($str==“0”){ echo “返回了true.”;}</p>
+<h3 id="3in_array">3：in_array()</h3>
+<p><strong>3.1：函数介绍</strong></p>
+<p>in_array(规定要在数组搜索的值，规定要搜索的数组) 函数搜索数组中是否存在指定的值。</p>
+<p><strong>3.2：代码分析</strong></p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/9.jpg" alt=""></p>
+<p>可以看到上面的情况返回的都是true,因为’abc’会转换为0，'1bc’转换为1。 在所有php认为是int的地方输入string，都会被强制转换</p>
+<h3 id="4php弱类型的特性">4：PHP弱类型的特性</h3>
+<p><strong>4.1：介绍</strong></p>
+<p>PHP 是一门弱类型语言，不必向 PHP 声明该变量的数据类型，PHP 会根据变量的值，自动把变量的值转换为正确的数据类型，但在这个转换过程中就有可能引发一些安全问题。</p>
+<p><strong>4.2：代码分析</strong></p>
+<p>对返回值进行分析</p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/11.jpg" alt=""></p>
+<p><strong>比较操作符：</strong></p>
+<p><strong>===</strong> 在进行比较的时候，会先判断两种字符串的类型是否相等，再比较。</p>
+<p><strong>==</strong> 在进行比较的时候，会先将字符串类型转化成相同，再比较。</p>
+<p><strong>这里特别强调一下在PHP中，Hash比较缺陷：</strong></p>
+<p>PHP在处理哈希字符串时，会利用&quot;!=“或”==&quot;来对哈希值进行比较，它把每一个以&quot;0E&quot;开头的哈希值都解释为0，所以如果两个不同的密码经过哈希以后，其哈希值都是以&quot;0E&quot;开头的，那么PHP将会认为他们相同，都是0。</p>
+<h3 id="5unset">5：unset</h3>
+<p><strong>5.1：函数介绍</strong></p>
+<p>unset($var) 函数用于销毁给定的变量（$var: 要销毁的变量），如果变量$var包含在请求参数中，可能出现销毁一些变量而实现程序逻辑绕过。</p>
+<p><strong>5.2：代码分析</strong></p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/12.jpg" alt=""></p>
+<h3 id="6serialize-和-unserialize漏洞">6：serialize 和 unserialize漏洞</h3>
+<p><strong>6.1：介绍</strong></p>
+<p>php类可能会包含一些特殊的函数叫magic函数，magic函数命名是以符号__开头的，比如 __construct， __destruct，__toString，__sleep，__wakeup等等。这些函数都会在某些特殊时候被自动调用。</p>
+<p>例如__construct()方法会在一个对象被创建时自动调用，对应的__destruct则会在一个对象被销毁时调用等等。</p>
+<p>这里有两个比较特别的Magic方法，__sleep 方法会在一个对象被序列化的时候调用。 __wakeup方法会在一个对象被反序列化的时候调用。</p>
+<p><strong>6.2：代码分析</strong></p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/13.jpg" alt=""></p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/14.jpg" alt=""></p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/15.jpg" alt=""></p>
+<p><strong>通过这道题来分析：</strong></p>
+<p>flag在pctf.php，但showimg.php中不允许直接读取pctf.php，只有在index.php中可以传入变量class</p>
+<p>，index.php中Shield类的实例$X = unserialize($g)，$g = $_GET[‘class’];，$X中不知$filename变量，但需要找的是：$filename = “pctf.php”，现$X已知，求传入的class变量值。</p>
+<p>可以进行序列化操作：</p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/16.jpg" alt=""></p>
+<p>得到：O:6:“Shield”:1:{s:4:“file”;s:8:“pctf.php”;}</p>
+<p>构造：</p>
+<p><a href="http://web.jarvisoj.com:32768/index.php?class=O:6:%22Shield%22:1:%7Bs:4:%22file%22;s:8:%22pctf.php%22;%7D" target="_blank" rel="noopener">http://web.jarvisoj.com:32768/index.php?class=O:6:“Shield”:1:{s:4:“file”;s:8:“pctf.php”;}</a></p>
+<p>unserialize()函数漏洞的根源在于unserialize()函数的参数可控。如果反序列化对象中存在魔术方法，而且魔术方法中的代码有能够被我们控制，漏洞就这样产生了，根据不同的代码可以导致各种攻击，如代码注入、SQL注入、目录遍历等等。</p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/17.jpg" alt=""></p>
+<p>这里使用了php的magic方法destruct（详情参考PHP: Magic Methods），而destruct是当一个对象被销毁时被自动调用的析构方法。</p>
+<p>然后unserialize中参数可控，这样我们就可以构造一个序列化的对象A来控制其中的变量a的值，最终会产生漏洞。</p>
+<p>我们构造一个序列化的对象A并给其中变量a赋值为&lt;?php phpinfo();?&gt;如下：</p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/18.jpg" alt=""></p>
+<p>可以看到成功将&lt;?php phpinfo();?&gt;写入hello.php</p>
+<h3 id="7session-反序列化漏洞cve-2016-7124">7：session 反序列化漏洞（<strong>CVE-2016-7124</strong>）</h3>
+<p><strong>7.1：介绍</strong></p>
+<p>该漏洞的主要原因是：</p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/19.jpg" alt=""></p>
+<p>两者处理session的方式不同</p>
+<p><strong>7.2：代码分析</strong></p>
+<p>利用下面代码可以生成session值</p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/20.jpg" alt=""></p>
+<p>我们来看看生成的session值</p>
+<p><strong>spoock|s:3:“111”;</strong> //session键值|内容序列化</p>
+<p><strong>a:1:{s:6:“spoock”;s:3:“111”;}a:1:{s:N:session键值;内容序列化}</strong></p>
+<p>//在ini_set(‘session.serialize_handler’, ‘php’);中把|之前认为是键值后面的视为序列化</p>
+<p>那么就可以利用这一漏洞执行一些恶意代码</p>
+<p><strong>例如：</strong></p>
+<ol>
+<li>
+<p><strong>PHP</strong></p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/21.jpg" alt=""></p>
+</li>
+<li>
+<p><strong>PHP</strong></p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/22.jpg" alt=""></p>
+<p>在1.PHP里面输入a参数序列化的值</p>
+<p><strong>|O:5:“lemon”:1:{s:2:“hi”;s:10:“phpinfo();”;}</strong></p>
+<p>则被序列化为</p>
+<p><strong>a:1:{s:6:“spoock”;s:44:&quot;|O:5:“lemon”:1:{s:2:“hi”;s:10:“phpinfo();”;}</strong></p>
+<p>在2.PHP里面打开 就可以执行phpinfo（）了</p>
+</li>
+</ol>
+<h3 id="8md5-compare漏洞">8：MD5 compare漏洞</h3>
+<p><strong>8.1：漏洞介绍</strong></p>
+<p>PHP在处理哈希字符串时，会利用&quot;!=“或”==&quot;来对哈希值进行比较，它把每一个以&quot;0E&quot;开头的哈希值都解释为0，所以如果两个不同的密码经过哈希以后，其哈希值都是以&quot;0E&quot;开头的，那么PHP将会认为他们相同，都是0。</p>
+<p>同时MD5不能处理数组，若有以下判断则可用数组绕过</p>
+<p><strong>8.2：代码分析</strong></p>
+<p>常见的payload有：</p>
+<p>0x01 md5(str)</p>
+<p>QNKCDZO</p>
+<p>240610708</p>
+<p>s878926199a</p>
+<p>s155964671a</p>
+<p>s214587387a</p>
+<p>s214587387a</p>
+<p>sha1(str)</p>
+<p>sha1(‘aaroZmOk’)</p>
+<p>sha1(‘aaK1STfY’)</p>
+<p>sha1(‘aaO8zKZF’)</p>
+<p>sha1(‘aa3OFF9m’)</p>
+<p>双MD5的：</p>
+<p>md5(“V5VDSHva7fjyJoJ33IQl”) =&gt; 0e18bb6e1d5c2e19b63898aeed6b37ea</p>
+<p>md5(“0e18bb6e1************”) =&gt; 0e0a710a092113dd5ec9dd47d4d7b86f</p>
+<p>CbDLytmyGm2xQyaLNhWn</p>
+<p>md5(CbDLytmyGm2xQyaLNhWn) =&gt; 0ec20b7c66cafbcc7d8e8481f0653d18</p>
+<p>md5(md5(CbDLytmyGm2xQyaLNhWn)) =&gt; 0e3a5f2a80db371d4610b8f940d296af</p>
+<p>770hQgrBOjrcqftrlaZk</p>
+<p>md5(770hQgrBOjrcqftrlaZk) =&gt; 0e689b4f703bdc753be7e27b45cb3625</p>
+<p>md5(md5(770hQgrBOjrcqftrlaZk)) =&gt; 0e2756da68ef740fd8f5a5c26cc45064</p>
+<p>7r4lGXCH2Ksu2JNT3BYM</p>
+<p>md5(7r4lGXCH2Ksu2JNT3BYM) =&gt; 0e269ab12da27d79a6626d91f34ae849</p>
+<p>md5(md5(7r4lGXCH2Ksu2JNT3BYM)) =&gt; 0e48d320b2a97ab295f5c4694759889f</p>
+<h3 id="9ereg函数漏洞">9：ereg函数漏洞：</h3>
+<p><strong>9.1：漏洞介绍</strong></p>
+<p>ereg()函数用指定的模式搜索一个字符串中指定的字符串,如果匹配成功返回true,否则,则返回false。搜索字母的字符是大小写敏感的。</p>
+<p>int ereg(string pattern, string originalstring, [array regs]);</p>
+<p><strong>例：</strong>$email_id = <a href="mailto:%22admin@tutorialspoint.com" target="_blank" rel="noopener">&quot;admin@tutorialspoint.com</a>&quot;;</p>
+<p>$retval = ereg(&quot;(\.)(com$)&quot;, $email_id);</p>
+<p>ereg()限制password的格式，只能是数字或者字母。但ereg()函数存在NULL截断漏洞，可以使用%00绕过验证。</p>
+<p><strong>9.2：代码分析</strong></p>
+<p><strong>利用ereg()存在NULL截断漏洞，导致了正则过滤被绕过,所以可以使用%00截断正则匹配</strong></p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/24.jpg" alt=""></p>
+<p><strong>这里ereg有两个漏洞：</strong></p>
+<p>①：如果 $_GET[‘password’]为数组，则返回值为NULL</p>
+<p>②：如果为123%00&amp;&amp;&amp;**，则返回值为true</p>
+<p>其余为false</p>
+<h3 id="10strcmp漏洞">10：Strcmp()漏洞</h3>
+<p><strong>10.1：函数介绍</strong></p>
+<p>strcmp(string1,string2) 函数比较两个字符串。strcmp() 函数是二进制安全的，且区分大小写。</p>
+<p><strong>10.2：代码分析</strong></p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/26.jpg" alt=""></p>
+<p>这里函数的返回值为：</p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/25.jpg" alt=""></p>
+<p>所以我们可以通过给参数传入一个 数组[] 或者一个 object 来绕过</p>
+<p>在5.3之前的php中，显示了报错的警告信息后，将return 0 !!! 也就是虽然报了错，但却判定其相等了。这对于使用这个函数来做选择语句中的判断的代码来说简直是一个致命的漏洞，当然，php官方在后面的版本中修复了这个漏洞，使得报错的时候函数不返回任何值。strcmp只会处理字符串参数，如果给个数组的话呢，就会返回NULL,而判断使用的是==，NULL==0是 `bool(true)</p>
+<h3 id="11is_numeric函数">11：is_numeric函数</h3>
+<p><strong>11.1：函数介绍</strong></p>
+<p>is_numeric() 函数用于检测变量是否为数字或数字字符串，如果变量是否为数字，是数字返回1，不是则返回0。比较范围不局限于十进制数字。</p>
+<p><strong>11.2：代码分析</strong></p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/27.jpg" alt=""></p>
+<p>在这道题中：</p>
+<p>①：is_numeric($temp)?die(“no numeric”):NULL; 决定了temp不能是数字</p>
+<p>②：if($temp&gt;1336) 决定temp是一个数字且大于1336</p>
+<p>利用PHP弱类型的一个特性，当一个整形和一个其他类型进行比较的时候，会先把其他类型intval再比。如果输入一个1337a这样的字符串，在is_numeric中返回true，然后在比较时被转换成数字1337，这样就绕过判断输出flag。</p>
+<h3 id="12sha1-和-md5-函数无法处理数组">12：sha1 和 md5 函数无法处理数组</h3>
+<p><strong>12.1：函数介绍</strong></p>
+<p>在PHP中sha1函数和md5函数主要用来对输入的值进行加密，但md5 和 sha1 无法处理数组，返回 NULL。</p>
+<p><strong>12.2：代码分析</strong></p>
+<p>可以看到sha1函数和md5函数对于数组，会返回NULL</p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/28.jpg" alt=""></p>
+<p>当出现类似的md5($_GET[‘username’]) === md5($_GET[‘password’])这样的判断的时候，可以通过给参数赋值为数组绕过。</p>
+<p>例：<a href="http://127.0.0.1/***/18.php?username%5B%5D=1&amp;password%5B%5D=2" target="_blank" rel="noopener">http://127.0.0.1/***/18.php?username[]=1&amp;password[]=2</a></p>
+<h3 id="13parse_str">13：parse_str</h3>
+<p><strong>13.1：函数介绍</strong></p>
+<p>parse_str() 函数把查询字符串解析到变量中。</p>
+<p>注释：如果未设置 array 参数，由该函数设置的变量将覆盖已存在的同名变量。</p>
+<p>与 parse_str() 类似的函数还有 mb_parse_str()，parse_str 将字符串解析成多个变量，如果参数str是URL传递入的查询字符串（query string），则将它解析为变量并设置到当前作用域</p>
+<p><strong>13.2：案例分析</strong></p>
+<p><a href="https://blog.csdn.net/websinesafe/article/details/81559146" target="_blank" rel="noopener">[https://blog.csdn.net/websinesafe/article/details/81559146]{.underline}</a></p>
+<h3 id="14extract变量覆盖">14：extract()变量覆盖</h3>
+<p><strong>14.1：函数介绍</strong></p>
+<p>extract() 函数从数组中将变量导入到当前的符号表。</p>
+<p>该函数使用数组键名作为变量名，使用数组键值作为变量值。针对数组中的每个元素，将在当前符号表中创建对应的一个变量。</p>
+<p>该函数返回成功设置的变量数目。</p>
+<p><strong>14.2：代码分析</strong></p>
+<p>函数从数组中将变量导入到当前的符号表,该函数使用数组键名作为变量名，使用数组键值作为变量值。</p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/31.jpg" alt=""></p>
+<p><a href="http://xn--www-c88dq59e44dh1cw89cdr6bkltolc.xxx.com/test.php?auth=aaa%E6%97%B6%E5%B0%B1%E4%BC%9A%E5%87%BA%E7%8E%B0%E5%8F%98%E9%87%8F%E8%A6%86%E7%9B%96%E9%97%AE%E9%A2%98%EF%BC%8C%E5%AE%89%E5%85%A8%E7%9A%84%E5%81%9A%E6%B3%95%E6%98%AF%E7%A1%AE%E5%AE%9Aregister_globals=OFF%E5%90%8E%EF%BC%8C%E5%9C%A8%E8%B0%83%E7%94%A8extract()%E6%97%B6%E4%BD%BF%E7%94%A8EXTR_SKIP%E4%BF%9D%E8%AF%81%E5%B7%B2%E6%9C%89%E5%8F%98%E9%87%8F%E4%B8%8D%E4%BC%9A%E8%A2%AB%E8%A6%86%E7%9B%96%E3%80%82" target="_blank" rel="noopener">当用户访问链接为www.xxx.com/test.php?auth=aaa时就会出现变量覆盖问题，安全的做法是确定register_globals=OFF后，在调用extract()时使用EXTR_SKIP保证已有变量不会被覆盖。</a></p>
+<h3 id="15命令执行函数">15：命令执行函数</h3>
+<p><strong>15.1：函数介绍</strong></p>
+<p>PHP中能够执行系统命令的函数有system、exec、passthru、shell_exec、popen、proc_open、pcntl_exec</p>
+<p><strong>15.2：代码分析</strong></p>
+<p>当没使用escapeshellarg() 或escapeshellcmd() 函数来防御用户欺骗系统从而执行任意命令时，命令执行函数就有可能执行一个外部的应用程序并将相应的执行结果输出，例如：</p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/32.jpg" alt=""></p>
+<h3 id="16代码执行函数">16：代码执行函数</h3>
+<p><strong>16.1：函数介绍</strong></p>
+<p>常见的代码执行函数有  eval、preg_replace+/e、assert、call_user_func、call_user_func_array、create_function等函数</p>
+<p><strong>16.2：代码分析</strong></p>
+<p>php 代码可以这样在双引号中被执行</p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/33.jpg" alt=""></p>
+<p><strong>16.3：防御方法</strong></p>
+<p>尽量不要执行外部的应用程序或命令</p>
+<p>使用自定义函数或函数库来替代外部应用程序或命令的功能</p>
+<p>使用escappeshellarg函数来处理命令的参数</p>
+<p>使用sare_mode_exec_dir来指定可执行的文件路径</p>
+<p>将执行的参数做白名单限制，在代码或配置文件中限制某些参数</p>
+<h3 id="17文件包含">17：文件包含</h3>
+<p><strong>17.1：函数介绍</strong></p>
+<p>常见的文件包含函数：require()、require_once()、 include()、include_once()</p>
+<p><strong>17.2：代码分析</strong></p>
+<p>文件包含函数加载的参数没有经过过滤或者严格的定义，可以被用户控制，包含其他恶意文件，导致了执行了非预期的代码。</p>
+<p><img src="//mingxin.live/img/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A11/34.jpg" alt=""></p>
+<p>$_GET[‘filename’]参数开发者没有经过严格的过滤，直接带入了include的函数，攻击者可以修改$_GET[‘filename’]的值，执行非预期的操作。</p>
+<h3 id="18文件上传函数">18：文件上传函数</h3>
+<p><strong>18.1：函数介绍</strong></p>
+<p>上传函数move_uploaded_file()定义和用法：</p>
+<p>move_uploaded_file() 函数将上传的文件移动到新位置。</p>
+<p>若成功，则返回 true，否则返回 false。</p>
+<p>语法：</p>
+<p>move_uploaded_file(file,newloc)</p>
+<p><strong>18.2：防御（即审计关注点）</strong></p>
+<p>①：使用白名单方式检测文件后缀</p>
+<p>②：上传之后按时间能算法生成文件名称</p>
+<p>③：上传目录脚本文件不可执行</p>
+<p>④：注意 %00 截断</p>
+<p>⑤：Content-Type 验证</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/article/MS17-010漏洞复现及后渗透测试/" data-toggle="tooltip" data-placement="top" title="MS17-010漏洞复现及后渗透测试">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#php代码审计常见漏洞函数介绍"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">php&#x4EE3;&#x7801;&#x5BA1;&#x8BA1;&#x5E38;&#x89C1;&#x6F0F;&#x6D1E;&#x51FD;&#x6570;&#x4ECB;&#x7ECD;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#一常见的容易出现漏洞的函数介绍"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">&#x4E00;&#xFF1A;&#x5E38;&#x89C1;&#x7684;&#x5BB9;&#x6613;&#x51FA;&#x73B0;&#x6F0F;&#x6D1E;&#x7684;&#x51FD;&#x6570;&#x4ECB;&#x7ECD;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1intval使用不当导致安全漏洞的分析"><span class="toc-nav-number">1.1.1.</span> <span class="toc-nav-text">1&#xFF1A;intval()&#x4F7F;&#x7528;&#x4E0D;&#x5F53;&#x5BFC;&#x81F4;&#x5B89;&#x5168;&#x6F0F;&#x6D1E;&#x7684;&#x5206;&#x6790;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2switch"><span class="toc-nav-number">1.1.2.</span> <span class="toc-nav-text">2&#xFF1A;switch()</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#3in_array"><span class="toc-nav-number">1.1.3.</span> <span class="toc-nav-text">3&#xFF1A;in_array()</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#4php弱类型的特性"><span class="toc-nav-number">1.1.4.</span> <span class="toc-nav-text">4&#xFF1A;PHP&#x5F31;&#x7C7B;&#x578B;&#x7684;&#x7279;&#x6027;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#5unset"><span class="toc-nav-number">1.1.5.</span> <span class="toc-nav-text">5&#xFF1A;unset</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#6serialize-和-unserialize漏洞"><span class="toc-nav-number">1.1.6.</span> <span class="toc-nav-text">6&#xFF1A;serialize &#x548C; unserialize&#x6F0F;&#x6D1E;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#7session-反序列化漏洞cve-2016-7124"><span class="toc-nav-number">1.1.7.</span> <span class="toc-nav-text">7&#xFF1A;session &#x53CD;&#x5E8F;&#x5217;&#x5316;&#x6F0F;&#x6D1E;&#xFF08;<strong>CVE-2016-7124</strong>&#xFF09;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#8md5-compare漏洞"><span class="toc-nav-number">1.1.8.</span> <span class="toc-nav-text">8&#xFF1A;MD5 compare&#x6F0F;&#x6D1E;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#9ereg函数漏洞"><span class="toc-nav-number">1.1.9.</span> <span class="toc-nav-text">9&#xFF1A;ereg&#x51FD;&#x6570;&#x6F0F;&#x6D1E;&#xFF1A;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#10strcmp漏洞"><span class="toc-nav-number">1.1.10.</span> <span class="toc-nav-text">10&#xFF1A;Strcmp()&#x6F0F;&#x6D1E;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#11is_numeric函数"><span class="toc-nav-number">1.1.11.</span> <span class="toc-nav-text">11&#xFF1A;is_numeric&#x51FD;&#x6570;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#12sha1-和-md5-函数无法处理数组"><span class="toc-nav-number">1.1.12.</span> <span class="toc-nav-text">12&#xFF1A;sha1 &#x548C; md5 &#x51FD;&#x6570;&#x65E0;&#x6CD5;&#x5904;&#x7406;&#x6570;&#x7EC4;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#13parse_str"><span class="toc-nav-number">1.1.13.</span> <span class="toc-nav-text">13&#xFF1A;parse_str</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#14extract变量覆盖"><span class="toc-nav-number">1.1.14.</span> <span class="toc-nav-text">14&#xFF1A;extract()&#x53D8;&#x91CF;&#x8986;&#x76D6;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#15命令执行函数"><span class="toc-nav-number">1.1.15.</span> <span class="toc-nav-text">15&#xFF1A;&#x547D;&#x4EE4;&#x6267;&#x884C;&#x51FD;&#x6570;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#16代码执行函数"><span class="toc-nav-number">1.1.16.</span> <span class="toc-nav-text">16&#xFF1A;&#x4EE3;&#x7801;&#x6267;&#x884C;&#x51FD;&#x6570;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#17文件包含"><span class="toc-nav-number">1.1.17.</span> <span class="toc-nav-text">17&#xFF1A;&#x6587;&#x4EF6;&#x5305;&#x542B;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#18文件上传函数"><span class="toc-nav-number">1.1.18.</span> <span class="toc-nav-text">18&#xFF1A;&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x51FD;&#x6570;</span></a></li></ol></li></ol></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#PHP代码审计" title="PHP代码审计">PHP代码审计</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://blog.csdn.net/qq_41880069" target="_blank">CSDN Blog MX-LQ</a></li>
+                    
+                        <li><a href="https://www.secquan.org/users/明心" target="_blank">圈子社区 ID 明心</a></li>
+                    
+                        <li><a href="https://github.com/MX-LQ" target="_blank">GitHub ID MX-LQ </a></li>
+                    
+                        <li><a href="http://www.mignxin.top" target="_blank">明心 |Blog2 </a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/MX-LQ">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 明心 2019 
+                    <br>
+                      Welcome you<a href="http://www.mingxin.live">made by 明心</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                     About <a href="http://www.mingxin.live">明心</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=MX-LQ&repo=MX-LQ.github.io&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://www.mingxin.live/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://www.mingxin.live/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
