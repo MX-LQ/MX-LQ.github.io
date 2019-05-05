@@ -15,7 +15,7 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          //逻辑漏洞总结 - 明心 | Blog
+          //mingxin.live/source/_posts/逻辑漏洞总结 - 明心 | Blog
         
     </title>
 
@@ -96,7 +96,7 @@
                               <a class="tag" href="/tags/#Web安全" title="Web安全">Web安全</a>
                             
                         </div>
-                        <h1>//逻辑漏洞总结</h1>
+                        <h1>//mingxin.live/source/_posts/逻辑漏洞总结</h1>
                         <h2 class="subheading">从实际案例学习逻辑漏洞，基本覆盖了所有常见的逻辑漏洞</h2>
                         <span class="meta">
                             Posted by 明心 on
@@ -154,14 +154,14 @@
 
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
@@ -222,19 +222,19 @@
 <p>逻辑漏洞是指由于程序逻辑不严或逻辑太复杂，导致一些逻辑分支不能够正常处理或处理错误，一般出现在任意密码修改（没有旧密码验证）、越权访问、密码找回、交易支付金额等。</p>
 <h2 id="二逻辑漏洞原理与利用方法"><strong>二：逻辑漏洞原理与利用方法</strong></h2>
 <p><strong>逻辑漏洞主要涉及的方向为业务安全和支付安全，这里尽可能多的找了一些实际应用的案例。</strong></p>
-<p><img src="//xn--h9tt00auobl03agxte3a/1.png" alt=""></p>
+<p><img src="//mingxin.live/source/_posts/%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/1.png" alt=""></p>
 <h2 id="1验证码突破">1：验证码突破</h2>
 <p>多存在于登录、找密码应用，提交敏感数据的地方</p>
 <h3 id="11验证码暴力破解测试">1.1：验证码暴力破解测试</h3>
 <p>①：使用burp对特定的验证码进行暴力破解</p>
 <p>②：使用其他爆破工具也可以，常见的有Medusa和Hydra</p>
-<p>点击这里→<a href="https://www.secquan.org/Discuss/584" target="_blank" rel="noopener">无锋大佬的文章</a> 对验证码可以爆破进行了深度的原理分析</p>
-<p>点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2013-34367" target="_blank" rel="noopener">验证码爆破实例</a> 实例还原验证码可爆破</p>
+<p>点击这里→<a href="https://mingxin.live/source/_posts/www.secquan.org/Discuss/584" target="_blank" rel="noopener">无锋大佬的文章</a> 对验证码可以爆破进行了深度的原理分析</p>
+<p>点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2013-34367" target="_blank" rel="noopener">验证码爆破实例</a> 实例还原验证码可爆破</p>
 <h3 id="12验证码时间-次数测试">1.2：验证码时间、次数测试</h3>
 <p>①：抓取携带验证码的数据包不断重复提交，例如：在投诉建议处输入要投诉的内容信息，及验证码参数，此时抓包重复提交数据包，查看历史投诉中是否存在重复提交的参数信息。</p>
 <p>②：尝试重放发送验证码的包，查看手机是否在短时间内收到了多条短信，是的话则存在短信轰炸漏洞，这是因为后端没有对发送手机短信做时间限制</p>
-<p>实例：<a href="https://bugs.secquan.org/bugs/WooYun-2015-119180" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2015-119180</a></p>
-<p>点击这里→<a href="https://www.secquan.org/Discuss/1068569" target="_blank" rel="noopener">短信轰炸绕过姿势</a></p>
+<p>实例：<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2015-119180" target="_blank" rel="noopener">https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2015-119180</a></p>
+<p>点击这里→<a href="https://mingxin.live/source/_posts/www.secquan.org/Discuss/1068569" target="_blank" rel="noopener">短信轰炸绕过姿势</a></p>
 <h3 id="13验证码客户端回显测试">1.3：验证码客户端回显测试</h3>
 <p>①：验证码客户端回显测试</p>
 <p>当客户端有需要和服务器进行交互，发送验证码时，即可使用firefox按F12调出firebug就可看到客户端与服务器进行交互的详细信息，可以直接看到短信验证码。</p>
@@ -244,7 +244,7 @@
 <p>●验验证码使用过后不刷新，时效性不过期，可以一直复用</p>
 <p>●验证码使用过后不刷新，时效性不过期，可以一直复用</p>
 <p>●很多验证码的显示很简单，容易被机器识别</p>
-<p>点击这里→<a href="https://www.secquan.org/Discuss/1079" target="_blank" rel="noopener">圈子大佬开发的验证码识别</a></p>
+<p>点击这里→<a href="https://mingxin.live/source/_posts/www.secquan.org/Discuss/1079" target="_blank" rel="noopener">圈子大佬开发的验证码识别</a></p>
 <p>●有些手机短信验证码都为 4-8位 纯数字的验证码，在接口没有任何限制的情况下是可以直接爆破的</p>
 <p>●在未上线前为了方便测试加了888888、000000这样的万能验证码但是上线后没去删除测试的内容导致被恶意利用</p>
 <p>①：参数污染绕过</p>
@@ -263,14 +263,14 @@
 <p>短信验证码验证程序逻辑存在缺陷，业务流程的第一步、第二部、第三步都是放在同一个页面里，验证第一步验证码是通过js来判断的，可以禁用JS，在没有获取验证码的情况下可以填写实名信息，并且提交成功。</p>
 <h2 id="2身份认证安全">2：身份认证安全</h2>
 <h3 id="21暴力破解">2.1：暴力破解</h3>
-<p>此类例子在早期较多：<a href="https://bugs.secquan.org/bugs/WooYun-2014-88906" target="_blank" rel="noopener">大众点评后台爆破</a></p>
+<p>此类例子在早期较多：<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2014-88906" target="_blank" rel="noopener">大众点评后台爆破</a></p>
 <p>常用工具：</p>
 <p>Burpsuite  、Medusa   、Hydra</p>
-<p>htpwdScan 撞库爆破必备 URL:<a href="https:/github.com/lijiejie/htpwdScan" target="_blank" rel="noopener"> https://github.com/lijiejie/htpwdScan</a></p>
+<p>htpwdScan 撞库爆破必备 URL:<a href="https:/github.com/lijiejie/htpwdScan" target="_blank" rel="noopener"> https://mingxin.live/source/_posts/github.com/lijiejie/htpwdScan</a></p>
 <p>hydra 源码安装xhydra支持更多的协议去爆破 (可破WEB，其他协议不属于业务安全的范畴)</p>
 <h3 id="22session-amp-cookie类">2.2：session &amp; cookie类</h3>
 <p>会话固定攻击：利用服务器的session不变机制，借他人之手获得认证和授权，冒充他人。</p>
-<p>点击这里→<a href="https://www.secquan.org/Notes/1068444" target="_blank" rel="noopener">会话固定攻击详解与实战</a></p>
+<p>点击这里→<a href="https://mingxin.live/source/_posts/www.secquan.org/Notes/1068444" target="_blank" rel="noopener">会话固定攻击详解与实战</a></p>
 <h3 id="23弱加密">2.3：弱加密</h3>
 <p>前端加密，用密文去后台校验，并利用smart decode可解</p>
 <h2 id="3业务一致性安全">3：业务一致性安全</h2>
@@ -278,24 +278,24 @@
 <p>抓包修改手机号码参数为其他号码尝试，例如在办理查询页面，输入自己的号码然后抓包，修改手机号码参数为其他人号码，查看是否能查询其他人的业务。</p>
 <h3 id="32邮箱或者用户篡改">3.2：邮箱或者用户篡改</h3>
 <p>抓包修改用户或者邮箱参数为其他用户或者邮箱</p>
-<p>案例：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2014-74441" target="_blank" rel="noopener">绿盟RSAS安全系统全版本通杀权限管理员绕过漏洞</a></p>
+<p>案例：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2014-74441" target="_blank" rel="noopener">绿盟RSAS安全系统全版本通杀权限管理员绕过漏洞</a></p>
 <h3 id="33订单id篡改">3.3：订单id篡改</h3>
 <p>查看自己的订单id，然后修改id（加减一）查看是否能查看其它订单信息</p>
-<p>案例：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2013-44137" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2013-44137</a></p>
+<p>案例：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2013-44137" target="_blank" rel="noopener">https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2013-44137</a></p>
 <h3 id="34商品编号篡改">3.4：商品编号篡改</h3>
 <p>例如积分兑换处，100个积分只能换商品编号为001,1000个积分只能换商品编号005，在100积分换商品的时候抓包把换商品的编号修改为005，用低积分换区高积分商品</p>
-<p>案例：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2013-41617" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2013-41617</a></p>
+<p>案例：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2013-41617" target="_blank" rel="noopener">https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2013-41617</a></p>
 <h3 id="35用户id篡改">3.5：用户id篡改</h3>
 <p>抓包查看自己的用户id，然后修改id（加减1）查看是否能查看其它用户id信息</p>
-<p>案例：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2015-111617" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2015-111617</a></p>
-<p>案例：点击这里→<a href="https://www.secquan.org/Discuss/1068446" target="_blank" rel="noopener">key大佬的不同的脑洞</a></p>
+<p>案例：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2015-111617" target="_blank" rel="noopener">https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2015-111617</a></p>
+<p>案例：点击这里→<a href="https://mingxin.live/source/_posts/www.secquan.org/Discuss/1068446" target="_blank" rel="noopener">key大佬的不同的脑洞</a></p>
 <h2 id="4业务数据篡改">4：业务数据篡改</h2>
 <h3 id="41金额数据篡改">4.1：金额数据篡改</h3>
 <p>抓包修改金额等字段，例如在支付页面抓取请求中商品的金额字段，修改成任意数额的金额并提交，查看能否以修改后的金额数据完成业务流程</p>
-<p>案例：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2015-117083" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2015-117083</a></p>
+<p>案例：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2015-117083" target="_blank" rel="noopener">https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2015-117083</a></p>
 <h3 id="42商品数量篡改">4.2：商品数量篡改</h3>
 <p>抓包修改商品数量等字段，将请求中的商品数量修改成任意数额，如负数并提交，查看能否以修改后的数量完成业务流程。</p>
-<p>案例：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2013-45218" target="_blank" rel="noopener"><strong>https://bugs.secquan.org/bugs/WooYun-2013-45218</strong></a></p>
+<p>案例：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2013-45218" target="_blank" rel="noopener"><strong>https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2013-45218</strong></a></p>
 <h3 id="43最大数限制突破">4.3：最大数限制突破</h3>
 <p>很多商品限制用户购买数量时，服务器仅在页面通过js脚本限制，未在服务器端校验用户提交的数量，通过抓包修改商品最大数限制，将请求中的商品数量改为大于最大数限制的值，查看能否以修改后的数量完成业务流程。</p>
 <h3 id="44本地js参数修改">4.4：本地js参数修改</h3>
@@ -307,78 +307,78 @@
 <p>③：分析后台找回机制所采用的验证手段</p>
 <p>④：修改数据包验证推测</p>
 <h3 id="51用户凭证暴力破解">5.1：用户凭证暴力破解</h3>
-<p>①：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2012-11833" target="_blank" rel="noopener">当当网任意用户密码修改-第一波</a></p>
-<p>②：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2013-46999" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2013-46999</a></p>
+<p>①：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2012-11833" target="_blank" rel="noopener">当当网任意用户密码修改-第一波</a></p>
+<p>②：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2013-46999" target="_blank" rel="noopener">https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2013-46999</a></p>
 <h3 id="52返回凭证">5.2：返回凭证</h3>
 <p>返回凭证可以修改遍历任意用户，或返回凭证可抓包获得，或凭证可以本地构造</p>
-<p>①：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2012-11174" target="_blank" rel="noopener">返回凭证修改用户id可重置任意用户密码</a></p>
-<p>②：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2014-57661" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2014-57661</a></p>
-<p>③：点击这里→<a href="https://www.freebuf.com/articles/web/160883.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/web/160883.html</a></p>
+<p>①：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2012-11174" target="_blank" rel="noopener">返回凭证修改用户id可重置任意用户密码</a></p>
+<p>②：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2014-57661" target="_blank" rel="noopener">https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2014-57661</a></p>
+<p>③：点击这里→<a href="https://mingxin.live/source/_posts/www.freebuf.com/articles/web/160883.html" target="_blank" rel="noopener">https://mingxin.live/source/_posts/www.freebuf.com/articles/web/160883.html</a></p>
 <h3 id="53邮箱弱token">5.3：邮箱弱token</h3>
 <p>注：</p>
 <p>●找回密码的token如果是base64编码的，而解码后的明文根据其规则修改就可以成为别人用户找回密码的凭证了。</p>
 <p><strong>●</strong><strong>对比法</strong>，使用A、B两个账号，A账号先正常走一遍流程，然后记录流程的请求报文跟响应报文，使用B账号来测试是否能绕过直接进入最后一步骤</p>
-<p>①：点击这里→<a href="https://www.secpulse.com/archives/9608.html" target="_blank" rel="noopener">奇虎360时间戳可爆破</a></p>
-<p>②：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2016-188088" target="_blank" rel="noopener">举一反三</a></p>
-<p>③：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2015-90226" target="_blank" rel="noopener">中兴某网站弱token</a></p>
-<p>④：点击这里→<a href="https://www.freebuf.com/articles/web/176211.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/web/176211.html</a></p>
+<p>①：点击这里→<a href="https://mingxin.live/source/_posts/www.secpulse.com/archives/9608.html" target="_blank" rel="noopener">奇虎360时间戳可爆破</a></p>
+<p>②：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2016-188088" target="_blank" rel="noopener">举一反三</a></p>
+<p>③：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2015-90226" target="_blank" rel="noopener">中兴某网站弱token</a></p>
+<p>④：点击这里→<a href="https://mingxin.live/source/_posts/www.freebuf.com/articles/web/176211.html" target="_blank" rel="noopener">https://mingxin.live/source/_posts/www.freebuf.com/articles/web/176211.html</a></p>
 <h3 id="54用户凭证有效性">5.4：用户凭证有效性</h3>
-<p>点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2014-69987" target="_blank" rel="noopener">用户修改凭证，绕过检验</a></p>
+<p>点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2014-69987" target="_blank" rel="noopener">用户修改凭证，绕过检验</a></p>
 <h3 id="55重新绑定">5.5：重新绑定</h3>
-<p>①：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2012-08307" target="_blank" rel="noopener">修改id用自己的手机绑定其他人的邮箱</a></p>
-<p>②：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2014-81467" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2014-81467</a></p>
+<p>①：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2012-08307" target="_blank" rel="noopener">修改id用自己的手机绑定其他人的邮箱</a></p>
+<p>②：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2014-81467" target="_blank" rel="noopener">https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2014-81467</a></p>
 <h3 id="56用户身份验证">5.6：用户身份验证</h3>
-<p>①：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2013-18263" target="_blank" rel="noopener">密码找回的最后一步没有验证用户身份</a></p>
-<p>②：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2014-75941" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2014-75941</a></p>
+<p>①：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2013-18263" target="_blank" rel="noopener">密码找回的最后一步没有验证用户身份</a></p>
+<p>②：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2014-75941" target="_blank" rel="noopener">https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2014-75941</a></p>
 <h3 id="57找回步骤">5.7：找回步骤</h3>
-<p>①：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2015-98765" target="_blank" rel="noopener">直接跳过中间的找回步骤</a></p>
-<p>②：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2016-175218" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2016-175218</a></p>
+<p>①：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2015-98765" target="_blank" rel="noopener">直接跳过中间的找回步骤</a></p>
+<p>②：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2016-175218" target="_blank" rel="noopener">https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2016-175218</a></p>
 <h3 id="58本地验证">5.8：本地验证</h3>
 <p>直接本地验证是否通过，可以直接抓包修改，如验证验证码是否一致等</p>
-<p>①：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2014-83035" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2014-83035</a></p>
-<p>②：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2014-69987" target="_blank" rel="noopener">OPPO验证码本地验证</a></p>
+<p>①：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2014-83035" target="_blank" rel="noopener">https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2014-83035</a></p>
+<p>②：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2014-69987" target="_blank" rel="noopener">OPPO验证码本地验证</a></p>
 <h3 id="59注册ampsession-覆盖">5.9：注册&amp;session 覆盖</h3>
 <p>在业务的同一个步骤，使用自己的凭证覆盖别人的凭证，从而修改别人的密码或覆盖</p>
-<p>①：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2015-160942" target="_blank" rel="noopener">session覆盖重置别人的手机号</a></p>
-<p>②：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2014-88708" target="_blank" rel="noopener">覆盖admin用户登录</a></p>
-<p><img src="//xn--h9tt00auobl03agxte3a/2.png" alt=""></p>
+<p>①：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2015-160942" target="_blank" rel="noopener">session覆盖重置别人的手机号</a></p>
+<p>②：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2014-88708" target="_blank" rel="noopener">覆盖admin用户登录</a></p>
+<p><img src="//mingxin.live/source/_posts/%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/2.png" alt=""></p>
 <h2 id="6业务授权安全">6：业务授权安全</h2>
 <h3 id="61非授权访问">6.1：非授权访问</h3>
 <p>非授权访问是指用户在没有通过认证授权的情况下能够直接访问需要通过认证才能访问到的页面或文本信息。可以尝试在登录某网站前台或后台之后，将相关的页面链接复制于其他浏览器或其他电脑上进行访问，看是否能访问成功。</p>
-<p>①：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2013-34046" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2013-34046</a></p>
-<p>②：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2014-86597" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2014-86597</a></p>
+<p>①：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2013-34046" target="_blank" rel="noopener">https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2013-34046</a></p>
+<p>②：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2014-86597" target="_blank" rel="noopener">https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2014-86597</a></p>
 <h3 id="62越权访问">6.2：越权访问</h3>
 <p>越权漏洞的成因主要是因为开发人员在对数据进行增、删、改、查询时对客户端请求的数据过分相信而遗漏了权限的判定</p>
 <p><strong>6.2.1：垂直越权</strong></p>
 <p>垂直越权是指使用权限低的用户可以访问权限较高的用户，用户可以通过修改ID的方式访问其他权限的系统内容，属于垂直越权操作。</p>
-<p>点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2014-84657" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2014-84657</a></p>
+<p>点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2014-84657" target="_blank" rel="noopener">https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2014-84657</a></p>
 <p><strong>6.2.2：水平越权</strong></p>
 <p>水平越权是指相同权限的不同用户可以互相访问</p>
-<p>①：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2014-71839" target="_blank" rel="noopener">通过修改id即可查看其他人的信息</a></p>
-<p>②：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2016-172889" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2016-172889</a></p>
+<p>①：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2014-71839" target="_blank" rel="noopener">通过修改id即可查看其他人的信息</a></p>
+<p>②：点击这里→<a href="https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2016-172889" target="_blank" rel="noopener">https://mingxin.live/source/_posts/bugs.secquan.org/bugs/WooYun-2016-172889</a></p>
 <h2 id="7条件竞争http并发">7：条件竞争(HTTP并发)</h2>
 <p><strong>场景：</strong></p>
 <p>在签到、转账、兑换、购买等场景是最容易出现这样的问题，而并发测试的方法可以使用Fiddler也可以使用BurpSuite Intruder模块。</p>
 <p>这里例举下Fiddler测试方法（BurpSuite测试很简单就不说明了）：</p>
 <p>配置好代理，设置好拦截：</p>
-<p><img src="//xn--h9tt00auobl03agxte3a/3.png" alt=""></p>
+<p><img src="//mingxin.live/source/_posts/%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/3.png" alt=""></p>
 <p>然后点击 <strong>兑换</strong>或<strong>转账</strong>或<strong>签到</strong> 等最后一步按钮的时候会抓到一个请求，右键这一请求然后按住Shift点击Replay-&gt;Reissue Requests：</p>
-<p><img src="//xn--h9tt00auobl03agxte3a/4.png" alt=""></p>
+<p><img src="//mingxin.live/source/_posts/%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/4.png" alt=""></p>
 <p>填入要重发的次数：（例如20次）</p>
-<p><img src="//xn--h9tt00auobl03agxte3a/5.png" alt=""></p>
+<p><img src="//mingxin.live/source/_posts/%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/5.png" alt=""></p>
 <p>点击Go放行</p>
-<p><img src="//xn--h9tt00auobl03agxte3a/6.png" alt=""></p>
+<p><img src="//mingxin.live/source/_posts/%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/6.png" alt=""></p>
 <p>最后自己来判断是否存在并发的问题，例如签到，如果存在那么肯定是签到天数或者签到所获得的奖励会一下子有很多，也可以看Fiddler中的响应报文结果。</p>
 <h2 id="三逻辑漏洞实例拓展"><strong>三：逻辑漏洞实例拓展</strong></h2>
 <p>以下案例使用的方法基本在前面都提到过，实战中关键靠思路和细心。</p>
 <p><strong>案例1:通过猜测用户身份标识，修改可导致被重置任意用户密码</strong></p>
-<p>思路清晰，分析过程详细→<a href="https://secquan.org/Discuss/858" target="_blank" rel="noopener">https://secquan.org/Discuss/858</a></p>
+<p>思路清晰，分析过程详细→<a href="https://mingxin.live/source/_posts/secquan.org/Discuss/858" target="_blank" rel="noopener">https://mingxin.live/source/_posts/secquan.org/Discuss/858</a></p>
 <p><strong>案例2:综合分析，多想细观察是关键</strong></p>
-<p>点击这里→<a href="https://secquan.org/Discuss/823" target="_blank" rel="noopener">https://secquan.org/Discuss/823</a></p>
+<p>点击这里→<a href="https://mingxin.live/source/_posts/secquan.org/Discuss/823" target="_blank" rel="noopener">https://mingxin.live/source/_posts/secquan.org/Discuss/823</a></p>
 <p><strong>案例3：cookie覆盖，重置其他用户密码</strong></p>
-<p>点击这里<strong>→</strong><a href="https://www.secquan.org/Discuss/426" target="_blank" rel="noopener"><strong>https://www.secquan.org/Discuss/426</strong></a></p>
+<p>点击这里<strong>→</strong><a href="https://mingxin.live/source/_posts/www.secquan.org/Discuss/426" target="_blank" rel="noopener"><strong>https://mingxin.live/source/_posts/www.secquan.org/Discuss/426</strong></a></p>
 <p><strong>案例4：多个漏洞存在</strong></p>
-<p>点击这里→<a href="https://www.secquan.org/Discuss/718" target="_blank" rel="noopener">https://www.secquan.org/Discuss/718</a></p>
+<p>点击这里→<a href="https://mingxin.live/source/_posts/www.secquan.org/Discuss/718" target="_blank" rel="noopener">https://mingxin.live/source/_posts/www.secquan.org/Discuss/718</a></p>
 
                 
 
