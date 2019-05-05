@@ -15,7 +15,7 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          /逻辑漏洞总结 - 明心 | Blog
+          //逻辑漏洞总结 - 明心 | Blog
         
     </title>
 
@@ -96,7 +96,7 @@
                               <a class="tag" href="/tags/#Web安全" title="Web安全">Web安全</a>
                             
                         </div>
-                        <h1>/逻辑漏洞总结</h1>
+                        <h1>//逻辑漏洞总结</h1>
                         <h2 class="subheading">从实际案例学习逻辑漏洞，基本覆盖了所有常见的逻辑漏洞</h2>
                         <span class="meta">
                             Posted by 明心 on
@@ -222,7 +222,7 @@
 <p>逻辑漏洞是指由于程序逻辑不严或逻辑太复杂，导致一些逻辑分支不能够正常处理或处理错误，一般出现在任意密码修改（没有旧密码验证）、越权访问、密码找回、交易支付金额等。</p>
 <h2 id="二逻辑漏洞原理与利用方法"><strong>二：逻辑漏洞原理与利用方法</strong></h2>
 <p><strong>逻辑漏洞主要涉及的方向为业务安全和支付安全，这里尽可能多的找了一些实际应用的案例。</strong></p>
-<p><img src="/article/逻辑漏洞总结/%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/1.png" alt=""></p>
+<p><img src="//xn--h9tt00auobl03agxte3a/1.png" alt=""></p>
 <h2 id="1验证码突破">1：验证码突破</h2>
 <p>多存在于登录、找密码应用，提交敏感数据的地方</p>
 <h3 id="11验证码暴力破解测试">1.1：验证码暴力破解测试</h3>
@@ -341,7 +341,7 @@
 <p>在业务的同一个步骤，使用自己的凭证覆盖别人的凭证，从而修改别人的密码或覆盖</p>
 <p>①：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2015-160942" target="_blank" rel="noopener">session覆盖重置别人的手机号</a></p>
 <p>②：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2014-88708" target="_blank" rel="noopener">覆盖admin用户登录</a></p>
-<p><img src="/article/逻辑漏洞总结/%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/2.png" alt=""></p>
+<p><img src="//xn--h9tt00auobl03agxte3a/2.png" alt=""></p>
 <h2 id="6业务授权安全">6：业务授权安全</h2>
 <h3 id="61非授权访问">6.1：非授权访问</h3>
 <p>非授权访问是指用户在没有通过认证授权的情况下能够直接访问需要通过认证才能访问到的页面或文本信息。可以尝试在登录某网站前台或后台之后，将相关的页面链接复制于其他浏览器或其他电脑上进行访问，看是否能访问成功。</p>
@@ -361,13 +361,13 @@
 <p>在签到、转账、兑换、购买等场景是最容易出现这样的问题，而并发测试的方法可以使用Fiddler也可以使用BurpSuite Intruder模块。</p>
 <p>这里例举下Fiddler测试方法（BurpSuite测试很简单就不说明了）：</p>
 <p>配置好代理，设置好拦截：</p>
-<p><img src="/article/逻辑漏洞总结/%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/3.png" alt=""></p>
+<p><img src="//xn--h9tt00auobl03agxte3a/3.png" alt=""></p>
 <p>然后点击 <strong>兑换</strong>或<strong>转账</strong>或<strong>签到</strong> 等最后一步按钮的时候会抓到一个请求，右键这一请求然后按住Shift点击Replay-&gt;Reissue Requests：</p>
-<p><img src="/article/逻辑漏洞总结/%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/4.png" alt=""></p>
+<p><img src="//xn--h9tt00auobl03agxte3a/4.png" alt=""></p>
 <p>填入要重发的次数：（例如20次）</p>
-<p><img src="/article/逻辑漏洞总结/%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/5.png" alt=""></p>
+<p><img src="//xn--h9tt00auobl03agxte3a/5.png" alt=""></p>
 <p>点击Go放行</p>
-<p><img src="/article/逻辑漏洞总结/%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/6.png" alt=""></p>
+<p><img src="//xn--h9tt00auobl03agxte3a/6.png" alt=""></p>
 <p>最后自己来判断是否存在并发的问题，例如签到，如果存在那么肯定是签到天数或者签到所获得的奖励会一下子有很多，也可以看Fiddler中的响应报文结果。</p>
 <h2 id="三逻辑漏洞实例拓展"><strong>三：逻辑漏洞实例拓展</strong></h2>
 <p>以下案例使用的方法基本在前面都提到过，实战中关键靠思路和细心。</p>
