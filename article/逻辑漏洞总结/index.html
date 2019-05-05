@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <link rel="icon" href="/favicon.ico">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          逻辑漏洞总结 - 明心 | Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://www.mingxin.live/article/逻辑漏洞总结/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/5.jpg')
+            /*post*/
+        
+    }
+    
+    #signature{
+        background-image: url('//img/signature/1.gif');
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Web安全" title="Web安全">Web安全</a>
+                            
+                        </div>
+                        <h1>逻辑漏洞总结</h1>
+                        <h2 class="subheading">从实际案例学习逻辑漏洞，基本覆盖了所有常见的逻辑漏洞</h2>
+                        <span class="meta">
+                            Posted by 明心 on
+                            2019-05-05
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ming Xin</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/About Me/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="逻辑漏洞总结"><strong>逻辑漏洞总结</strong></h1>
+<h2 id="一逻辑漏洞概述">一：逻辑漏洞概述</h2>
+<p>逻辑漏洞是指由于程序逻辑不严或逻辑太复杂，导致一些逻辑分支不能够正常处理或处理错误，一般出现在任意密码修改（没有旧密码验证）、越权访问、密码找回、交易支付金额等。</p>
+<h2 id="二逻辑漏洞原理与利用方法"><strong>二：逻辑漏洞原理与利用方法</strong></h2>
+<p><strong>逻辑漏洞主要涉及的方向为业务安全和支付安全，这里尽可能多的找了一些实际应用的案例。</strong></p>
+<p><img src="/article/逻辑漏洞总结/%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93%5C1.png" alt="image"></p>
+<h2 id="1验证码突破">1：验证码突破</h2>
+<p>多存在于登录、找密码应用，提交敏感数据的地方</p>
+<h3 id="11验证码暴力破解测试">1.1：验证码暴力破解测试</h3>
+<p>①：使用burp对特定的验证码进行暴力破解</p>
+<p>②：使用其他爆破工具也可以，常见的有Medusa和Hydra</p>
+<p>点击这里→<a href="https://www.secquan.org/Discuss/584" target="_blank" rel="noopener">无锋大佬的文章</a> 对验证码可以爆破进行了深度的原理分析</p>
+<p>点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2013-34367" target="_blank" rel="noopener">验证码爆破实例</a> 实例还原验证码可爆破</p>
+<h3 id="12验证码时间-次数测试">1.2：验证码时间、次数测试</h3>
+<p>①：抓取携带验证码的数据包不断重复提交，例如：在投诉建议处输入要投诉的内容信息，及验证码参数，此时抓包重复提交数据包，查看历史投诉中是否存在重复提交的参数信息。</p>
+<p>②：尝试重放发送验证码的包，查看手机是否在短时间内收到了多条短信，是的话则存在短信轰炸漏洞，这是因为后端没有对发送手机短信做时间限制</p>
+<p>实例：<a href="https://bugs.secquan.org/bugs/WooYun-2015-119180" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2015-119180</a></p>
+<p>点击这里→<a href="https://www.secquan.org/Discuss/1068569" target="_blank" rel="noopener">短信轰炸绕过姿势</a></p>
+<h3 id="13验证码客户端回显测试">1.3：验证码客户端回显测试</h3>
+<p>①：验证码客户端回显测试</p>
+<p>当客户端有需要和服务器进行交互，发送验证码时，即可使用firefox按F12调出firebug就可看到客户端与服务器进行交互的详细信息，可以直接看到短信验证码。</p>
+<h3 id="14验证码绕过测试">1.4：验证码绕过测试</h3>
+<p>验证码漏洞存在场景：</p>
+<p>●验证码刷新之后，而历史刷新的验证码还是可以继续使用</p>
+<p>●验验证码使用过后不刷新，时效性不过期，可以一直复用</p>
+<p>●验证码使用过后不刷新，时效性不过期，可以一直复用</p>
+<p>●很多验证码的显示很简单，容易被机器识别</p>
+<p>点击这里→<a href="https://www.secquan.org/Discuss/1079" target="_blank" rel="noopener">圈子大佬开发的验证码识别</a></p>
+<p>●有些手机短信验证码都为 4-8位 纯数字的验证码，在接口没有任何限制的情况下是可以直接爆破的</p>
+<p>●在未上线前为了方便测试加了888888、000000这样的万能验证码但是上线后没去删除测试的内容导致被恶意利用</p>
+<p>①：参数污染绕过</p>
+<p>参数污染，就是说后台发送短信的时候会取数字那部分，当你混入其他字符之后绕过了对已经发送的手机号码的限制的校验</p>
+<p>②：变量污染绕过</p>
+<p>所谓变量污染呢，大概因为后台校验了第一个变量的内容都当成了值处理，但是当数据包在传递到后台过去的时候，如果参数名是一样的时候，是会以第二个、第三个、第四个…最后那个参数为基准去传递，因此绕过了后台的限制</p>
+<p>③：数据长度绕过</p>
+<p>手机号码的定义是11位数，但是后台没有对传递的手机号码做校验长度，比如123=0123=00123，通过该方法来进行一个手机号码的绕过：【狗的一个漏洞】</p>
+<p>④：修改变量参数绕过</p>
+<p>比较常见就是发送验证码的时候前端带入一个状态，通过修改这个状态可以来绕过系统的限制，如已注册的用户不能发送短信或者相反未注册的用户不能发送短信Flase 改成true</p>
+<p>⑤：Cookie替换绕过</p>
+<p>校验用户的凭证放在了cookie中，通过修改cookie中的某些参数可以打到绕过对以发送/已注册的手机号码进行发送短信</p>
+<p>⑥：空格绕过短信轰炸</p>
+<p>发送短信的时候是11位数，但是数据库没有限制字段长度为11，通过添加空格绕过了原有的校验，但是后台发送号码的时候，取有效字符前面的字段，导致了出现被绕过的方法。</p>
+<p>⑦：验证码js绕过</p>
+<p>短信验证码验证程序逻辑存在缺陷，业务流程的第一步、第二部、第三步都是放在同一个页面里，验证第一步验证码是通过js来判断的，可以禁用JS，在没有获取验证码的情况下可以填写实名信息，并且提交成功。</p>
+<h2 id="2身份认证安全">2：身份认证安全</h2>
+<h3 id="21暴力破解">2.1：暴力破解</h3>
+<p>此类例子在早期较多：<a href="https://bugs.secquan.org/bugs/WooYun-2014-88906" target="_blank" rel="noopener">大众点评后台爆破</a></p>
+<p>常用工具：</p>
+<p>Burpsuite  、Medusa   、Hydra</p>
+<p>htpwdScan 撞库爆破必备 URL:<a href="https:/github.com/lijiejie/htpwdScan" target="_blank" rel="noopener"> https://github.com/lijiejie/htpwdScan</a></p>
+<p>hydra 源码安装xhydra支持更多的协议去爆破 (可破WEB，其他协议不属于业务安全的范畴)</p>
+<h3 id="22session-amp-cookie类">2.2：session &amp; cookie类</h3>
+<p>会话固定攻击：利用服务器的session不变机制，借他人之手获得认证和授权，冒充他人。</p>
+<p>点击这里→<a href="https://www.secquan.org/Notes/1068444" target="_blank" rel="noopener">会话固定攻击详解与实战</a></p>
+<h3 id="23弱加密">2.3：弱加密</h3>
+<p>前端加密，用密文去后台校验，并利用smart decode可解</p>
+<h2 id="3业务一致性安全">3：业务一致性安全</h2>
+<h3 id="31手机号篡改">3.1：手机号篡改</h3>
+<p>抓包修改手机号码参数为其他号码尝试，例如在办理查询页面，输入自己的号码然后抓包，修改手机号码参数为其他人号码，查看是否能查询其他人的业务。</p>
+<h3 id="32邮箱或者用户篡改">3.2：邮箱或者用户篡改</h3>
+<p>抓包修改用户或者邮箱参数为其他用户或者邮箱</p>
+<p>案例：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2014-74441" target="_blank" rel="noopener">绿盟RSAS安全系统全版本通杀权限管理员绕过漏洞</a></p>
+<h3 id="33订单id篡改">3.3：订单id篡改</h3>
+<p>查看自己的订单id，然后修改id（加减一）查看是否能查看其它订单信息</p>
+<p>案例：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2013-44137" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2013-44137</a></p>
+<h3 id="34商品编号篡改">3.4：商品编号篡改</h3>
+<p>例如积分兑换处，100个积分只能换商品编号为001,1000个积分只能换商品编号005，在100积分换商品的时候抓包把换商品的编号修改为005，用低积分换区高积分商品</p>
+<p>案例：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2013-41617" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2013-41617</a></p>
+<h3 id="35用户id篡改">3.5：用户id篡改</h3>
+<p>抓包查看自己的用户id，然后修改id（加减1）查看是否能查看其它用户id信息</p>
+<p>案例：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2015-111617" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2015-111617</a></p>
+<p>案例：点击这里→<a href="https://www.secquan.org/Discuss/1068446" target="_blank" rel="noopener">key大佬的不同的脑洞</a></p>
+<h2 id="4业务数据篡改">4：业务数据篡改</h2>
+<h3 id="41金额数据篡改">4.1：金额数据篡改</h3>
+<p>抓包修改金额等字段，例如在支付页面抓取请求中商品的金额字段，修改成任意数额的金额并提交，查看能否以修改后的金额数据完成业务流程</p>
+<p>案例：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2015-117083" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2015-117083</a></p>
+<h3 id="42商品数量篡改">4.2：商品数量篡改</h3>
+<p>抓包修改商品数量等字段，将请求中的商品数量修改成任意数额，如负数并提交，查看能否以修改后的数量完成业务流程。</p>
+<p>案例：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2013-45218" target="_blank" rel="noopener"><strong>https://bugs.secquan.org/bugs/WooYun-2013-45218</strong></a></p>
+<h3 id="43最大数限制突破">4.3：最大数限制突破</h3>
+<p>很多商品限制用户购买数量时，服务器仅在页面通过js脚本限制，未在服务器端校验用户提交的数量，通过抓包修改商品最大数限制，将请求中的商品数量改为大于最大数限制的值，查看能否以修改后的数量完成业务流程。</p>
+<h3 id="44本地js参数修改">4.4：本地js参数修改</h3>
+<p>部分应用程序通过Javascript处理用户提交的请求，通过修改Javascript脚本，测试修改后的数据是否影响到用户</p>
+<h2 id="5密码找回漏洞">5：密码找回漏洞</h2>
+<p>注：密码找回逻辑测试的一般流程</p>
+<p>①：先尝试正确的密码找回流程，选择不同的找回方式，记录所有数据包</p>
+<p>②：分析数据包，找到敏感部分，例如找回密码或重置密码时的参数</p>
+<p>③：分析后台找回机制所采用的验证手段</p>
+<p>④：修改数据包验证推测</p>
+<h3 id="51用户凭证暴力破解">5.1：用户凭证暴力破解</h3>
+<p>①：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2012-11833" target="_blank" rel="noopener">当当网任意用户密码修改-第一波</a></p>
+<p>②：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2013-46999" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2013-46999</a></p>
+<h3 id="52返回凭证">5.2：返回凭证</h3>
+<p>返回凭证可以修改遍历任意用户，或返回凭证可抓包获得，或凭证可以本地构造</p>
+<p>①：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2012-11174" target="_blank" rel="noopener">返回凭证修改用户id可重置任意用户密码</a></p>
+<p>②：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2014-57661" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2014-57661</a></p>
+<p>③：点击这里→<a href="https://www.freebuf.com/articles/web/160883.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/web/160883.html</a></p>
+<h3 id="53邮箱弱token">5.3：邮箱弱token</h3>
+<p>注：</p>
+<p>●找回密码的token如果是base64编码的，而解码后的明文根据其规则修改就可以成为别人用户找回密码的凭证了。</p>
+<p><strong>●</strong><strong>对比法</strong>，使用A、B两个账号，A账号先正常走一遍流程，然后记录流程的请求报文跟响应报文，使用B账号来测试是否能绕过直接进入最后一步骤</p>
+<p>①：点击这里→<a href="https://www.secpulse.com/archives/9608.html" target="_blank" rel="noopener">奇虎360时间戳可爆破</a></p>
+<p>②：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2016-188088" target="_blank" rel="noopener">举一反三</a></p>
+<p>③：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2015-90226" target="_blank" rel="noopener">中兴某网站弱token</a></p>
+<p>④：点击这里→<a href="https://www.freebuf.com/articles/web/176211.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/web/176211.html</a></p>
+<h3 id="54用户凭证有效性">5.4：用户凭证有效性</h3>
+<p>点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2014-69987" target="_blank" rel="noopener">用户修改凭证，绕过检验</a></p>
+<h3 id="55重新绑定">5.5：重新绑定</h3>
+<p>①：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2012-08307" target="_blank" rel="noopener">修改id用自己的手机绑定其他人的邮箱</a></p>
+<p>②：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2014-81467" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2014-81467</a></p>
+<h3 id="56用户身份验证">5.6：用户身份验证</h3>
+<p>①：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2013-18263" target="_blank" rel="noopener">密码找回的最后一步没有验证用户身份</a></p>
+<p>②：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2014-75941" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2014-75941</a></p>
+<h3 id="57找回步骤">5.7：找回步骤</h3>
+<p>①：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2015-98765" target="_blank" rel="noopener">直接跳过中间的找回步骤</a></p>
+<p>②：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2016-175218" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2016-175218</a></p>
+<h3 id="58本地验证">5.8：本地验证</h3>
+<p>直接本地验证是否通过，可以直接抓包修改，如验证验证码是否一致等</p>
+<p>①：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2014-83035" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2014-83035</a></p>
+<p>②：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2014-69987" target="_blank" rel="noopener">OPPO验证码本地验证</a></p>
+<h3 id="59注册ampsession-覆盖">5.9：注册&amp;session 覆盖</h3>
+<p>在业务的同一个步骤，使用自己的凭证覆盖别人的凭证，从而修改别人的密码或覆盖</p>
+<p>①：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2015-160942" target="_blank" rel="noopener">session覆盖重置别人的手机号</a></p>
+<p>②：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2014-88708" target="_blank" rel="noopener">覆盖admin用户登录</a></p>
+<p><img src="/article/逻辑漏洞总结/%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93%5C2.png" alt="image"></p>
+<h2 id="6业务授权安全">6：业务授权安全</h2>
+<h3 id="61非授权访问">6.1：非授权访问</h3>
+<p>非授权访问是指用户在没有通过认证授权的情况下能够直接访问需要通过认证才能访问到的页面或文本信息。可以尝试在登录某网站前台或后台之后，将相关的页面链接复制于其他浏览器或其他电脑上进行访问，看是否能访问成功。</p>
+<p>①：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2013-34046" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2013-34046</a></p>
+<p>②：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2014-86597" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2014-86597</a></p>
+<h3 id="62越权访问">6.2：越权访问</h3>
+<p>越权漏洞的成因主要是因为开发人员在对数据进行增、删、改、查询时对客户端请求的数据过分相信而遗漏了权限的判定</p>
+<p><strong>6.2.1：垂直越权</strong></p>
+<p>垂直越权是指使用权限低的用户可以访问权限较高的用户，用户可以通过修改ID的方式访问其他权限的系统内容，属于垂直越权操作。</p>
+<p>点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2014-84657" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2014-84657</a></p>
+<p><strong>6.2.2：水平越权</strong></p>
+<p>水平越权是指相同权限的不同用户可以互相访问</p>
+<p>①：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2014-71839" target="_blank" rel="noopener">通过修改id即可查看其他人的信息</a></p>
+<p>②：点击这里→<a href="https://bugs.secquan.org/bugs/WooYun-2016-172889" target="_blank" rel="noopener">https://bugs.secquan.org/bugs/WooYun-2016-172889</a></p>
+<h2 id="7条件竞争http并发">7：条件竞争(HTTP并发)</h2>
+<p><strong>场景：</strong></p>
+<p>在签到、转账、兑换、购买等场景是最容易出现这样的问题，而并发测试的方法可以使用Fiddler也可以使用BurpSuite Intruder模块。</p>
+<p>这里例举下Fiddler测试方法（BurpSuite测试很简单就不说明了）：</p>
+<p>配置好代理，设置好拦截：</p>
+<p><img src="/article/逻辑漏洞总结/%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93%5C3.png" alt="image"></p>
+<p>然后点击 <strong>兑换</strong>或<strong>转账</strong>或<strong>签到</strong> 等最后一步按钮的时候会抓到一个请求，右键这一请求然后按住Shift点击Replay-&gt;Reissue Requests：</p>
+<p><img src="/article/逻辑漏洞总结/%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93%5C4.png" alt="image"></p>
+<p>填入要重发的次数：（例如20次）</p>
+<p><img src="/article/逻辑漏洞总结/%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93%5C5.png" alt="image"></p>
+<p>点击Go放行</p>
+<p><img src="/article/逻辑漏洞总结/%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93%5C6.png" alt="image"></p>
+<p>最后自己来判断是否存在并发的问题，例如签到，如果存在那么肯定是签到天数或者签到所获得的奖励会一下子有很多，也可以看Fiddler中的响应报文结果。</p>
+<h2 id="三逻辑漏洞实例拓展"><strong>三：逻辑漏洞实例拓展</strong></h2>
+<p>以下案例使用的方法基本在前面都提到过，实战中关键靠思路和细心。</p>
+<p><strong>案例1:通过猜测用户身份标识，修改可导致被重置任意用户密码</strong></p>
+<p>思路清晰，分析过程详细→<a href="https://secquan.org/Discuss/858" target="_blank" rel="noopener">https://secquan.org/Discuss/858</a></p>
+<p><strong>案例2:综合分析，多想细观察是关键</strong></p>
+<p>点击这里→<a href="https://secquan.org/Discuss/823" target="_blank" rel="noopener">https://secquan.org/Discuss/823</a></p>
+<p><strong>案例3：cookie覆盖，重置其他用户密码</strong></p>
+<p>点击这里<strong>→</strong><a href="https://www.secquan.org/Discuss/426" target="_blank" rel="noopener"><strong>https://www.secquan.org/Discuss/426</strong></a></p>
+<p><strong>案例4：多个漏洞存在</strong></p>
+<p>点击这里→<a href="https://www.secquan.org/Discuss/718" target="_blank" rel="noopener">https://www.secquan.org/Discuss/718</a></p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/article/php代码审计常见漏洞函数介绍/" data-toggle="tooltip" data-placement="top" title="php代码审计常见漏洞函数介绍">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#逻辑漏洞总结"><span class="toc-nav-number">1.</span> <span class="toc-nav-text"><strong>&#x903B;&#x8F91;&#x6F0F;&#x6D1E;&#x603B;&#x7ED3;</strong></span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#一逻辑漏洞概述"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">&#x4E00;&#xFF1A;&#x903B;&#x8F91;&#x6F0F;&#x6D1E;&#x6982;&#x8FF0;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#二逻辑漏洞原理与利用方法"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text"><strong>&#x4E8C;&#xFF1A;&#x903B;&#x8F91;&#x6F0F;&#x6D1E;&#x539F;&#x7406;&#x4E0E;&#x5229;&#x7528;&#x65B9;&#x6CD5;</strong></span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#1验证码突破"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">1&#xFF1A;&#x9A8C;&#x8BC1;&#x7801;&#x7A81;&#x7834;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#11验证码暴力破解测试"><span class="toc-nav-number">1.3.1.</span> <span class="toc-nav-text">1.1&#xFF1A;&#x9A8C;&#x8BC1;&#x7801;&#x66B4;&#x529B;&#x7834;&#x89E3;&#x6D4B;&#x8BD5;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#12验证码时间-次数测试"><span class="toc-nav-number">1.3.2.</span> <span class="toc-nav-text">1.2&#xFF1A;&#x9A8C;&#x8BC1;&#x7801;&#x65F6;&#x95F4;&#x3001;&#x6B21;&#x6570;&#x6D4B;&#x8BD5;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#13验证码客户端回显测试"><span class="toc-nav-number">1.3.3.</span> <span class="toc-nav-text">1.3&#xFF1A;&#x9A8C;&#x8BC1;&#x7801;&#x5BA2;&#x6237;&#x7AEF;&#x56DE;&#x663E;&#x6D4B;&#x8BD5;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#14验证码绕过测试"><span class="toc-nav-number">1.3.4.</span> <span class="toc-nav-text">1.4&#xFF1A;&#x9A8C;&#x8BC1;&#x7801;&#x7ED5;&#x8FC7;&#x6D4B;&#x8BD5;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2身份认证安全"><span class="toc-nav-number">1.4.</span> <span class="toc-nav-text">2&#xFF1A;&#x8EAB;&#x4EFD;&#x8BA4;&#x8BC1;&#x5B89;&#x5168;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#21暴力破解"><span class="toc-nav-number">1.4.1.</span> <span class="toc-nav-text">2.1&#xFF1A;&#x66B4;&#x529B;&#x7834;&#x89E3;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#22session-amp-cookie类"><span class="toc-nav-number">1.4.2.</span> <span class="toc-nav-text">2.2&#xFF1A;session &amp; cookie&#x7C7B;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#23弱加密"><span class="toc-nav-number">1.4.3.</span> <span class="toc-nav-text">2.3&#xFF1A;&#x5F31;&#x52A0;&#x5BC6;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#3业务一致性安全"><span class="toc-nav-number">1.5.</span> <span class="toc-nav-text">3&#xFF1A;&#x4E1A;&#x52A1;&#x4E00;&#x81F4;&#x6027;&#x5B89;&#x5168;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#31手机号篡改"><span class="toc-nav-number">1.5.1.</span> <span class="toc-nav-text">3.1&#xFF1A;&#x624B;&#x673A;&#x53F7;&#x7BE1;&#x6539;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#32邮箱或者用户篡改"><span class="toc-nav-number">1.5.2.</span> <span class="toc-nav-text">3.2&#xFF1A;&#x90AE;&#x7BB1;&#x6216;&#x8005;&#x7528;&#x6237;&#x7BE1;&#x6539;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#33订单id篡改"><span class="toc-nav-number">1.5.3.</span> <span class="toc-nav-text">3.3&#xFF1A;&#x8BA2;&#x5355;id&#x7BE1;&#x6539;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#34商品编号篡改"><span class="toc-nav-number">1.5.4.</span> <span class="toc-nav-text">3.4&#xFF1A;&#x5546;&#x54C1;&#x7F16;&#x53F7;&#x7BE1;&#x6539;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#35用户id篡改"><span class="toc-nav-number">1.5.5.</span> <span class="toc-nav-text">3.5&#xFF1A;&#x7528;&#x6237;id&#x7BE1;&#x6539;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#4业务数据篡改"><span class="toc-nav-number">1.6.</span> <span class="toc-nav-text">4&#xFF1A;&#x4E1A;&#x52A1;&#x6570;&#x636E;&#x7BE1;&#x6539;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#41金额数据篡改"><span class="toc-nav-number">1.6.1.</span> <span class="toc-nav-text">4.1&#xFF1A;&#x91D1;&#x989D;&#x6570;&#x636E;&#x7BE1;&#x6539;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#42商品数量篡改"><span class="toc-nav-number">1.6.2.</span> <span class="toc-nav-text">4.2&#xFF1A;&#x5546;&#x54C1;&#x6570;&#x91CF;&#x7BE1;&#x6539;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#43最大数限制突破"><span class="toc-nav-number">1.6.3.</span> <span class="toc-nav-text">4.3&#xFF1A;&#x6700;&#x5927;&#x6570;&#x9650;&#x5236;&#x7A81;&#x7834;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#44本地js参数修改"><span class="toc-nav-number">1.6.4.</span> <span class="toc-nav-text">4.4&#xFF1A;&#x672C;&#x5730;js&#x53C2;&#x6570;&#x4FEE;&#x6539;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5密码找回漏洞"><span class="toc-nav-number">1.7.</span> <span class="toc-nav-text">5&#xFF1A;&#x5BC6;&#x7801;&#x627E;&#x56DE;&#x6F0F;&#x6D1E;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#51用户凭证暴力破解"><span class="toc-nav-number">1.7.1.</span> <span class="toc-nav-text">5.1&#xFF1A;&#x7528;&#x6237;&#x51ED;&#x8BC1;&#x66B4;&#x529B;&#x7834;&#x89E3;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#52返回凭证"><span class="toc-nav-number">1.7.2.</span> <span class="toc-nav-text">5.2&#xFF1A;&#x8FD4;&#x56DE;&#x51ED;&#x8BC1;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#53邮箱弱token"><span class="toc-nav-number">1.7.3.</span> <span class="toc-nav-text">5.3&#xFF1A;&#x90AE;&#x7BB1;&#x5F31;token</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#54用户凭证有效性"><span class="toc-nav-number">1.7.4.</span> <span class="toc-nav-text">5.4&#xFF1A;&#x7528;&#x6237;&#x51ED;&#x8BC1;&#x6709;&#x6548;&#x6027;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#55重新绑定"><span class="toc-nav-number">1.7.5.</span> <span class="toc-nav-text">5.5&#xFF1A;&#x91CD;&#x65B0;&#x7ED1;&#x5B9A;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#56用户身份验证"><span class="toc-nav-number">1.7.6.</span> <span class="toc-nav-text">5.6&#xFF1A;&#x7528;&#x6237;&#x8EAB;&#x4EFD;&#x9A8C;&#x8BC1;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#57找回步骤"><span class="toc-nav-number">1.7.7.</span> <span class="toc-nav-text">5.7&#xFF1A;&#x627E;&#x56DE;&#x6B65;&#x9AA4;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#58本地验证"><span class="toc-nav-number">1.7.8.</span> <span class="toc-nav-text">5.8&#xFF1A;&#x672C;&#x5730;&#x9A8C;&#x8BC1;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#59注册ampsession-覆盖"><span class="toc-nav-number">1.7.9.</span> <span class="toc-nav-text">5.9&#xFF1A;&#x6CE8;&#x518C;&amp;session &#x8986;&#x76D6;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#6业务授权安全"><span class="toc-nav-number">1.8.</span> <span class="toc-nav-text">6&#xFF1A;&#x4E1A;&#x52A1;&#x6388;&#x6743;&#x5B89;&#x5168;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#61非授权访问"><span class="toc-nav-number">1.8.1.</span> <span class="toc-nav-text">6.1&#xFF1A;&#x975E;&#x6388;&#x6743;&#x8BBF;&#x95EE;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#62越权访问"><span class="toc-nav-number">1.8.2.</span> <span class="toc-nav-text">6.2&#xFF1A;&#x8D8A;&#x6743;&#x8BBF;&#x95EE;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#7条件竞争http并发"><span class="toc-nav-number">1.9.</span> <span class="toc-nav-text">7&#xFF1A;&#x6761;&#x4EF6;&#x7ADE;&#x4E89;(HTTP&#x5E76;&#x53D1;)</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#三逻辑漏洞实例拓展"><span class="toc-nav-number">1.10.</span> <span class="toc-nav-text"><strong>&#x4E09;&#xFF1A;&#x903B;&#x8F91;&#x6F0F;&#x6D1E;&#x5B9E;&#x4F8B;&#x62D3;&#x5C55;</strong></span></a></li></ol></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Web安全" title="Web安全">Web安全</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://blog.csdn.net/qq_41880069" target="_blank">CSDN Blog MX-LQ</a></li>
+                    
+                        <li><a href="https://www.secquan.org/users/明心" target="_blank">圈子社区 ID 明心</a></li>
+                    
+                        <li><a href="https://github.com/MX-LQ" target="_blank">GitHub ID MX-LQ </a></li>
+                    
+                        <li><a href="http://www.mignxin.top" target="_blank">明心 |Blog2 </a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/MX-LQ">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 明心 2019 
+                    <br>
+                      Welcome you<a href="http://www.mingxin.live">made by 明心</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                     About <a href="http://www.mingxin.live">明心</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=MX-LQ&repo=MX-LQ.github.io&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://www.mingxin.live/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://www.mingxin.live/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
