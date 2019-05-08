@@ -154,14 +154,14 @@
 
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
@@ -241,6 +241,7 @@
 <p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/8.jpg" alt=""></p>
 <p>可以看到该CMS确实是ECShop，并且版本可能为1.1</p>
 <p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/9.jpg" alt=""></p>
+<h3 id="2漏洞利用写入webshell">2：漏洞利用，写入webshell</h3>
 <p>确定其CMS有什么用呢？一般的思路如下：</p>
 <ul>
 <li>Google找到其对应版本的已知漏洞或exp，进行利用</li>
@@ -256,7 +257,9 @@
 <li><a href="http://paper.tuisec.win/detail/5f427506f4635da" target="_blank" rel="noopener">http://paper.tuisec.win/detail/5f427506f4635da</a></li>
 <li><a href="https://www.cnblogs.com/68xi/p/9327620.html" target="_blank" rel="noopener">https://www.cnblogs.com/68xi/p/9327620.html</a></li>
 </ul>
-<p>利用EXP上传一句话木马，这里是在api目录下上传的<code>gooos.php</code> 使用菜刀连接</p>
+<p>利用EXP上传一句话木马，这里是在api目录下上传的<code>gooos.php</code></p>
+<h3 id="3shell连接查看数据库">3：shell连接，查看数据库</h3>
+<p>使用菜刀连接</p>
 <p>找到数据库的配置文件，查看数据库用户名和密码：</p>
 <p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/12.jpg" alt=""></p>
 <p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/13.jpg" alt=""></p>
@@ -264,6 +267,7 @@
 <p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/14.jpg" alt=""></p>
 <p>在线CMD 5查询了admin2的密码，查询结果为：admin88888</p>
 <p>（为什么不查admin，因为要购买，没钱）</p>
+<h3 id="4拿下管理员账户后台登录">4：拿下管理员账户，后台登录</h3>
 <p>直接在之前找到的后台地址登陆，用户名为<code>admin2</code> ，密码为<code>admin88888</code></p>
 <p>登陆之后，查看“犯罪通缉人列表”（受害者列表），受害者有上千人，渗透到此，取证完毕~</p>
 <p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/15.jpg" alt=""></p>
@@ -326,7 +330,7 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#诈骗网站渗透取证"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">&#x8BC8;&#x9A97;&#x7F51;&#x7AD9;&#x6E17;&#x900F;&#x53D6;&#x8BC1;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#一前言"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">&#x4E00;&#xFF1A;&#x524D;&#x8A00;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#二渗透过程"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">&#x4E8C;&#xFF1A;&#x6E17;&#x900F;&#x8FC7;&#x7A0B;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1信息搜集"><span class="toc-nav-number">1.2.1.</span> <span class="toc-nav-text">1&#xFF1A;&#x4FE1;&#x606F;&#x641C;&#x96C6;</span></a></li></ol></li></ol></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#诈骗网站渗透取证"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">&#x8BC8;&#x9A97;&#x7F51;&#x7AD9;&#x6E17;&#x900F;&#x53D6;&#x8BC1;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#一前言"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">&#x4E00;&#xFF1A;&#x524D;&#x8A00;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#二渗透过程"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">&#x4E8C;&#xFF1A;&#x6E17;&#x900F;&#x8FC7;&#x7A0B;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1信息搜集"><span class="toc-nav-number">1.2.1.</span> <span class="toc-nav-text">1&#xFF1A;&#x4FE1;&#x606F;&#x641C;&#x96C6;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2漏洞利用写入webshell"><span class="toc-nav-number">1.2.2.</span> <span class="toc-nav-text">2&#xFF1A;&#x6F0F;&#x6D1E;&#x5229;&#x7528;&#xFF0C;&#x5199;&#x5165;webshell</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#3shell连接查看数据库"><span class="toc-nav-number">1.2.3.</span> <span class="toc-nav-text">3&#xFF1A;shell&#x8FDE;&#x63A5;&#xFF0C;&#x67E5;&#x770B;&#x6570;&#x636E;&#x5E93;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#4拿下管理员账户后台登录"><span class="toc-nav-number">1.2.4.</span> <span class="toc-nav-text">4&#xFF1A;&#x62FF;&#x4E0B;&#x7BA1;&#x7406;&#x5458;&#x8D26;&#x6237;&#xFF0C;&#x540E;&#x53F0;&#x767B;&#x5F55;</span></a></li></ol></li></ol></li></ol>
         
         </div>
       </aside>
